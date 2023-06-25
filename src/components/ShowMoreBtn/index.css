@@ -1,0 +1,11 @@
+.show-more-btn {
+  @apply mx-auto text-xl font-semibold;
+}
+.show-more-btn button {
+  @apply mt-16 sm:py-5 lg:py-6 sm:w-[250px]
+  lg:w-[300px] capitalize rounded-full border border-main-black;
+}
+
+.show-more-btn button:disabled {
+  @apply opacity-30 bg-main-white text-main-black
+}

@@ -1,0 +1,106 @@
+
+.carousel {
+  @apply py-8 w-[90%] mx-auto
+  bg-slate-200 shadow-lg rounded-md cursor-grab overflow-hidden;
+}
+
+.carousel .inner-carousel {
+  @apply flex gap-[15px] w-full px-5;
+}
+
+.carousel .item {
+  @apply h-[230px] min-w-[450px];
+}
+
+.carousel .item img {
+  @apply shadow-lg w-full h-full rounded-md border-2 border-main-color;
+  pointer-events: none;
+}
+
+/* Date */
+.project-date {
+  @apply text-xl italic;
+}
+
+/* Skills */
+
+.skills-made-with {
+  @apply text-base flex gap-3 py-4 items-center
+  sm:flex-col lg:flex-row;
+}
+
+.skills-made-with h3 {
+  @apply text-xl;
+}
+
+.skills-made-with ul {
+  @apply flex gap-2 flex-wrap justify-center;
+}
+.skills-made-with ul li{
+  @apply bg-slate-100 transition-colors
+    hover:text-main-white p-2 rounded-md
+  hover:bg-main-color cursor-default;
+}
+
+/* Description */
+.project-desc {
+  @apply text-xl px-6 w-[80%] py-4 text-center;
+}
+
+/* Links */
+.ext-links-container {
+  @apply capitalize pt-5 flex gap-2 flex-wrap
+  justify-center;
+}
+
+.ext-links-container a {
+  @apply flex w-[250px] gap-2 border border-main-black py-[5px] px-3
+  justify-center rounded text-base
+  transition-colors
+  hover:bg-main-black hover:text-white;
+}
+
+/* Skeleton */
+
+
+.skeleton,
+.skeleton-lines p {
+  @apply w-full h-[15px] rounded-full bg-[#f0f0f0];
+}
+
+.skeleton {
+  @apply w-[180px]
+}
+
+.skeleton-container {
+  @apply h-[230px] w-[85%] bg-[#f0f0f0] rounded-md overflow-hidden relative;
+}
+
+.skeleton-lines {
+  @apply w-full px-6 pt-8 flex flex-col gap-5 items-center;
+}
+
+.skeleton-lines p {
+  @apply w-[90%] overflow-hidden relative;
+}
+
+.skeleton-container::before,
+.skeleton-lines p::before {
+  content: '';
+  position: absolute;
+  height: 1000px;
+  width: 80px;
+  top: -50%;
+  background-image: linear-gradient(90deg ,#f6f6f6, #d8d8d8, #f6f6f6);
+  opacity: 0.5;
+  transform: rotate(20deg);
+  animation: animateSkeleton 2s ease-in-out infinite;
+}
+
+@keyframes animateSkeleton {
+  from {
+    left: -20vw;
+  } to {
+    left: 100vw;
+  }
+}

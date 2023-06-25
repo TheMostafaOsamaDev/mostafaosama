@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+main {
+  @apply sm:py-32 lg:py-32 min-h-[100vh];
+}
+
+/* Buttons Effects */
+
+.btn-effect {
+  @apply overflow-hidden before:absolute before:content-['']
+    before:w-[180%] before:h-[180%] before:bg-main-color
+    before:transition-transform
+    before:duration-300
+    before:top-1/2
+    before:left-1/2 before:-translate-x-1/2
+    before:-z-10
+    hover:text-main-white
+    ;
+    transition: color 780ms 300ms;
+}
+
+.btn-effect.black {
+  @apply before:bg-main-black;
+}
+
+.btn-effect.white {
+  @apply border-main-white;
+}
+
+.btn-effect::before {
+  border-radius: 100%;
+  transform: translate(-50%, 400px);
+  animation: setDefault 0.8s ease-in-out forwards;
+}
+
+.btn-effect:hover::before {
+  animation: goUp 0.8s ease-in-out forwards;
+}
+
+@keyframes goUp {
+  from {
+    transform: translate(-50%, 400px);
+  } to {
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes setDefault {
+  from {
+    transform: translate(-50%, -50%);
+  } to {
+    transform: translate(-50%, -400px);
+  }
+}
+
+.btn-effect .content-btn {
+  @apply relative z-20;
+}
+
+/* Sub Sections */
+
+.sub-section {
+  @apply mt-16 sm:px-6 lg:px-20 pb-12 flex flex-col;
+}
+
+.get-in-touch {
+  @apply bg-main-black text-main-white pt-12;
+}
+
+.get-in-touch .sub-header {
+  @apply mb-[75px];
+}
+
+/* Error */
+.error-msg-fetch {
+  @apply text-center text-lg text-red-600 flex gap-3;
+}

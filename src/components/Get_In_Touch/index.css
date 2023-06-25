@@ -1,0 +1,19 @@
+.message-form {
+  @apply flex flex-col items-start w-fit mx-auto text-lg gap-1;
+}
+
+.message-form label {
+  @apply text-xl;
+}
+
+.message-form input,
+.message-form textarea {
+  @apply py-[8px] px-3 w-[350px] text-main-white bg-slate-800 resize-none rounded-md
+  focus:outline-none
+  focus:outline-main-color focus:border-none mb-4;
+}
+
+.message-form textarea {
+  @apply h-[250px] py-3 mb-0;
+}
+

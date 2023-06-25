@@ -1,0 +1,18 @@
+.sub-header {
+  @apply uppercase sm:text-4xl lg:text-5xl text-center font-semibold
+  tracking-normal relative w-fit mx-auto mb-32;
+}
+
+.sub-header .letter {
+  display: inline-block;
+  position: relative;
+  transform: translateZ(25px);
+  transform-origin: 50% 50% 25px;
+}
+
+.sub-header .line-under {
+  @apply w-[80%] h-[4px] absolute rounded-sm left-1/2
+  -translate-x-1/2 -bottom-2;
+  background: linear-gradient(#1d4ed8, #0091ff);
+}
+

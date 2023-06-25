@@ -1,0 +1,44 @@
+.personal-image-container {
+  @apply 
+  flex
+  mt-[-70px]
+  justify-center
+  before:absolute
+  before:content-['']
+  before:w-[100%]
+  before:h-[100%]
+  before:left-0
+  before:top-0
+  before:translate-x-[10px]
+  before:translate-y-[10px]
+  hover:before:translate-x-[0]
+  hover:before:translate-y-[0]
+  before:transition-all
+  before:rounded-md
+  before:-z-10
+  before:bg-main-color
+  before:opacity-100;
+}
+
+.personal-image-container img {
+  object-position: top center;
+}
+
+
+@media (width >= 991px) {
+  .personal-image-container {
+    @apply w-[940px] h-[500px]
+  }
+} 
+
+@media (width < 991px) {
+  .personal-image-container {
+    @apply w-[500px] h-[500px]
+  }
+} 
+
+@media (width < 767px) {
+  .personal-image-container {
+    @apply w-[300px] h-[450px]
+  }
+} 
