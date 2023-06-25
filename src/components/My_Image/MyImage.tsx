@@ -5,8 +5,6 @@ import myImage from "@/assets/my_image.jpg";
 import { motion } from "framer-motion";
 
 function MyImage() {
-  console.log(myImage)
-
   return (
       <motion.div className="personal-image-container"
       initial={{
