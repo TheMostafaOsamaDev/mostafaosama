@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   try {
     transport.sendMail({
       to: process.env.EMAIL,
-      from: email,
+      from: process.env.EMAIL,
       subject: `message from: ${email}`,
       title: `${email}: ${body.length > 10 ? (body.slice(0, 10) + "...") : body}`,
       html: `
