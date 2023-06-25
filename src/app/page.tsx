@@ -39,7 +39,7 @@ export default function Home() {
             height={550}
           />
           <Paragraph>
-            My name is Mostafa Osama, and I'm from Egypt. I have studied
+            My name is Mostafa Osama, and I am from Egypt. I have studied
             Computer Science and Artificial Intelligence at BNS University. I
             have a passion for web development and I am actively seeking
             challenging opportunities in this field.
