@@ -7,7 +7,9 @@ function MainNavbar() {
   let { width, height } = useScreenSizes();
 
   if(width >= 767) {
-    document.body.style.overflow = "";
+    if(typeof document !== undefined) {
+      document.body.style.overflow = "";
+    }
     return(
       <>
         <Header />
@@ -16,7 +18,9 @@ function MainNavbar() {
     )
   }
   else {
-    document.body.style.overflow = "";
+    if(typeof document !== undefined) {
+      document.body.style.overflow = "";
+    }
     return <BurgerMenu mode="sm" />
   }
 }
