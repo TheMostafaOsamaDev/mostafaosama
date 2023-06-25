@@ -1,42 +1,41 @@
 "use client";
-import { motion, useAnimationControls } from 'framer-motion';
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import { motion, useAnimationControls } from "framer-motion";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 function BurgerIcon({
   mode,
   screenHeight,
-  setIsOpen
+  setIsOpen,
 }: {
   mode: "sm" | "lg";
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   screenHeight?: number;
 }) {
-
   const animationControl = useAnimationControls();
 
   const closeOrHideBurger = () => {
-    if(mode === "sm") return animationControl.start({
-      scale: 1
-    })
+    if (mode === "sm")
+      return animationControl.start({
+        scale: 1,
+      });
 
-    if(screenHeight as number > 200) {
+    if ((screenHeight as number) > 200) {
       animationControl.start({
-        scale: 1
-      })
+        scale: 1,
+      });
     } else {
       animationControl.start({
-        scale: 0
-      })
+        scale: 0,
+      });
     }
-  }
+  };
 
-  if(mode === "lg") {
-    useEffect(() => {
+  useEffect(() => {
+    if(mode === "lg")
       closeOrHideBurger();
-    }, [screenHeight]);
-  }
+  }, [screenHeight]);
 
-  const changeBurgerState = (e : any) => {
-    const { currentTarget : button } = e;
+  const changeBurgerState = (e: any) => {
+    const { currentTarget: button } = e;
 
     if (!button) return;
     const currentState = button.getAttribute("data-state");
@@ -53,13 +52,11 @@ function BurgerIcon({
     }
   };
 
-
-
   return (
     <motion.button
       animate={animationControl}
       whileHover={{
-        scale: 1.1
+        scale: 1.1,
       }}
       className={`btn-effect burger-btn transition-all`}
       aria-controls="primary-navigation"
@@ -82,7 +79,7 @@ function BurgerIcon({
         ></path>
       </svg>
     </motion.button>
-  )
+  );
 }
 
-export default BurgerIcon
+export default BurgerIcon;
