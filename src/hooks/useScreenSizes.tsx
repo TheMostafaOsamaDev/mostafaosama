@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 
 function useScreenSizes() {
+  if (typeof window === "undefined") 
+    return [0, 0];
+
   const currWidth = window?.innerWidth;
   const currHeight = 0;
 
