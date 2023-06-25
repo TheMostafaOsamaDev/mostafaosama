@@ -9,19 +9,19 @@ function MainNavbar() {
   let element;
 
   useEffect(() => {
-    if (width >= 767) {
-      document.body.style.overflow = "";
-      element = (
-        <>
-          <Header />
-          <BurgerMenu mode="lg" screenHeight={height} />
-        </>
-      );
-    } else {
-      document.body.style.overflow = "";
-      element = <BurgerMenu mode="sm" />;
-    }
-  }, []);
+    document.body.style.overflow = "";
+  }, [width])
+
+  if (width >= 767) {
+    element = (
+      <>
+        <Header />
+        <BurgerMenu mode="lg" screenHeight={height} />
+      </>
+    );
+  } else {
+    element = <BurgerMenu mode="sm" />;
+  }
 
   return element;
 }
