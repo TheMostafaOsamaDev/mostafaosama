@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+// @ts-ignore
 import nodemailer from "nodemailer";
 
 
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
   console.log(emailRegex.test(email));
 
   try {
-    await transport.sendMail({
+    transport.sendMail({
       to: process.env.EMAIL,
       from: email,
       subject: `message from: ${email}`,
