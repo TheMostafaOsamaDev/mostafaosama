@@ -1,6 +1,5 @@
 import GridSquares from "@/components/Grid_Squares/GridSquares";
 import ImageView from "@/components/Image_View/ImageView";
-import Marquee from "@/components/Marquee/Marquee";
 import MyImage from "@/components/My_Image/MyImage";
 import SubHeader from "@/components/Sub_Header/SubHeader";
 import about1 from "@/assets/about-1.jpg";
@@ -25,7 +24,6 @@ export default function Home() {
       -translate-x-1/2"
         >
           <MyImage />
-          <Marquee />
         </div>
       </main>
 

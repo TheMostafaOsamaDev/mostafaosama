@@ -8,20 +8,24 @@ function MainNavbar() {
   let { width, height } = useScreenSizes();
   let element;
 
+  const getHeader = () => {
+    
+  };
+
   useEffect(() => {
     document.body.style.overflow = "";
   }, [width])
 
   if (width >= 767) {
-    element = (
-      <>
-        <Header />
-        <BurgerMenu mode="lg" screenHeight={height} />
-      </>
-    );
-  } else {
-    element = <BurgerMenu mode="sm" />;
-  }
+      element = (
+        <>
+          <Header />
+          <BurgerMenu mode="lg" screenHeight={height} />
+        </>
+      );
+    } else {
+      element = <BurgerMenu mode="sm" />;
+    }
 
   return element;
 }
