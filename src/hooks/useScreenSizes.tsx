@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 
 function useScreenSizes() {
-  if (typeof window === "undefined") 
-    return [0, 0];
-
-  const currWidth = window?.innerWidth;
+  let currWidth = 0;
   const currHeight = 0;
+
+  if (typeof window !== "undefined") {
+    currWidth = window?.innerWidth;
+  }
 
   const [width, setWidth] = useState(currWidth);
   const [height, setHeight] = useState(currHeight);
