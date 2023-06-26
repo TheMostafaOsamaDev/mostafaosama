@@ -44,7 +44,6 @@ function GetInTouch() {
       setIsLoading(false);
     }
   };
-  console.log(isLoading);
 
   return (
     <form
