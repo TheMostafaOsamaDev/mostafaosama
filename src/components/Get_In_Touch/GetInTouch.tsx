@@ -29,7 +29,6 @@ function GetInTouch() {
         process.env.NEXT_PUBLIC_PUBLICK_KEY as string
       );
 
-      console.log(res);
 
       if(res.status === 200) {
         setIsSuccess(true);
