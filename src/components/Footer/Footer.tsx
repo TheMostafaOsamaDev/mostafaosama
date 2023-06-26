@@ -19,12 +19,7 @@ function Footer() {
   ];
 
   return (
-    <motion.footer
-      initial="hidden"
-      whileInView="show"
-      transition={{
-        staggerChildren: 0.1,
-      }}
+    <footer
     >
       {allLinks.map((link) => (
         <SingleLink
@@ -33,7 +28,7 @@ function Footer() {
           href={link.href}
         />
       ))}
-    </motion.footer>
+    </footer>
   );
 }
 

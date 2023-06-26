@@ -1,17 +1,17 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, Suspense } from "react";
+import Loading from "./loading";
 
 export const metadata = {
   title: "My Work",
-  description:
-    "My projects list.",
+  description: "My projects list.",
 };
 
-function Layout( {children} : {children: ReactNode} ) {
+function Layout({ children }: { children: ReactNode }) {
   return (
     <>
-      {children}
+      <Suspense fallback={<Loading />}>{children}</Suspense>
     </>
-  )
+  );
 }
 
-export default Layout
+export default Layout;

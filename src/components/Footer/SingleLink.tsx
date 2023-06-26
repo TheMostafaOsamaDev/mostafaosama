@@ -12,19 +12,6 @@ interface LinkProps {
   href: string;
 }
 
-const linkVarient = {
-  hidden: {
-    opacity: 0,
-    filter: `blur(15px)`,
-    y: 10
-  },
-  show: {
-    opacity: 1,
-    filter: `blur(0px)`,
-    y: 0
-  }
-}
-
 function SingleLink({ name, href }: LinkProps) {
   let icon;
 
@@ -57,7 +44,6 @@ function SingleLink({ name, href }: LinkProps) {
         }}
         href={href}
         target="_blank"
-        variants={linkVarient}
         key={name+"-"+"link"}
       >
         {icon}

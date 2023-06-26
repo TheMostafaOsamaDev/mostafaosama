@@ -6,7 +6,7 @@
 }
 
 .burger-btn .hamburger {
-  transition: translate 1s, rotate 1s;
+  transition: translate 0.5s, rotate 0.5s;
 }
 
 .burger-btn[aria-expanded="true"] .hamburger {
@@ -15,7 +15,7 @@
 }
 
 .burger-btn .line {
-  transition: 1s;
+  transition: 0.5s;
   stroke-dasharray: 60 31 60 300;
 }
 

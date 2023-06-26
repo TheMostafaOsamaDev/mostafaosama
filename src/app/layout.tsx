@@ -2,6 +2,9 @@ import Footer from "@/components/Footer/Footer";
 import "./globals.css";
 import MainNavbar from "@/components/MainNavbar";
 import { IBM_Plex_Sans } from "next/font/google";
+import { Suspense } from "react";
+import Loading from "./loading";
+import ProgressBar from "@/components/Progress_Bar/ProgressBar";
 
 const main_font = IBM_Plex_Sans({
   weight: ["400", "700"],
@@ -19,15 +22,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("Main Layout");
   return (
     <html lang="en">
       <link rel="icon" href="/icon.png" sizes="any" />
       <body
         className={main_font.className + " relative"}
         suppressHydrationWarning={true}
-      >
+      > 
         <MainNavbar />
-        {children}
+        <Suspense fallback={<Loading />}>{children}</Suspense>
         <Footer />
       </body>
     </html>

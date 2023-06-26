@@ -12,11 +12,22 @@ function useScreenSizes() {
 
   const [width, setWidth] = useState(currWidth);
   const [height, setHeight] = useState(currHeight);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const checkIfMobileView = (width : number) => {
+    if(width < 767) {
+      console.log("Width: ",width < 767)
+      return setIsMobile(true);
+    } 
+    return setIsMobile(false);
+  }
 
   useEffect(() => {
 
     const getScreenWidth = (e : Event) => {
-      setWidth(window?.innerWidth);
+      const newWidth = window?.innerWidth;
+      setWidth(newWidth);
+      checkIfMobileView(newWidth);
     }
 
     const getScreenHeight = (e : Event) => {
@@ -33,9 +44,14 @@ function useScreenSizes() {
 
   }, [width, height]);
 
+  useEffect(() => {
+    checkIfMobileView(window?.innerWidth);
+  }, []);
+
   return {
     width,
-    height
+    height,
+    isMobile
   };
 }
 

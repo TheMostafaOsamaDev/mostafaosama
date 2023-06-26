@@ -24,6 +24,16 @@
   object-position: top center;
 }
 
+.personal-image-container .title-container {
+  @apply absolute bottom-0 w-full h-fit overflow-hidden;
+  background: linear-gradient(transparent, rgba(236, 236, 236, 0.551));
+
+}
+
+.personal-image-container .title-container h1 {
+  @apply uppercase sm:text-2xl sm:text-center lg:text-4xl font-bold p-4
+  w-full text-main-black;
+}
 
 @media (width >= 991px) {
   .personal-image-container {

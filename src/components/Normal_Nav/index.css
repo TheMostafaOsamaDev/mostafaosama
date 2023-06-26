@@ -3,6 +3,12 @@ header {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.248) 5%, transparent);
 }
 
+@media (width < 767px) {
+  header {
+    @apply hidden;
+  }
+}
+
 .links-container {
   @apply mx-auto flex w-fit relative overflow-hidden;
 }

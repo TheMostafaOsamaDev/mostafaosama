@@ -1,5 +1,6 @@
 footer {
-  @apply bg-main-black border-t border-slate-800 text-main-white flex
+  @apply absolute bottom-0 w-full
+  bg-main-black border-t border-slate-800 text-main-white flex
   gap-4 justify-center py-4;
 }
 

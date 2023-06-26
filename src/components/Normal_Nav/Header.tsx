@@ -8,14 +8,13 @@ const tabsVarient = {
   hidden: {
     y: '300px'
   },
-
   visible: {
     y: '0',
   }
 }
 
 function Header() {
-  const pathname = usePathname().split("/")[1];
+  let pathname = usePathname().split("/")[1];
   
 
   return (

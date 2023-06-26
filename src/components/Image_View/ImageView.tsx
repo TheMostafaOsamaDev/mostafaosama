@@ -11,7 +11,7 @@ interface Props {
 function ImageView({ width, height, path, alt }: Props) {
   return (
     <div className="image-container">
-      <Image src={path} alt={alt} width={width} height={height} />
+      <Image quality={100} src={path} alt={alt} width={width} height={height} />
     </div>
   );
 }

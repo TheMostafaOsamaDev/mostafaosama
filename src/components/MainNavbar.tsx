@@ -2,32 +2,22 @@
 import useScreenSizes from "@/hooks/useScreenSizes";
 import Header from "./Normal_Nav/Header";
 import BurgerMenu from "./Side_Nav/BurgerMenu";
-import { useEffect } from "react";
 
 function MainNavbar() {
-  let { width, height } = useScreenSizes();
-  let element;
+  let { height, isMobile } = useScreenSizes();
 
-  const getHeader = () => {
-    
-  };
+  console.log(isMobile)
 
-  useEffect(() => {
-    document.body.style.overflow = "";
-  }, [width])
+  if(isMobile) {
+    return <BurgerMenu mode="sm" screenHeight={height} />
+  }
 
-  if (width >= 767) {
-      element = (
-        <>
-          <Header />
-          <BurgerMenu mode="lg" screenHeight={height} />
-        </>
-      );
-    } else {
-      element = <BurgerMenu mode="sm" />;
-    }
-
-  return element;
+  return (
+    <>
+      <Header />
+      <BurgerMenu mode="lg" screenHeight={height} />
+    </>
+  );
 }
 
 export default MainNavbar;

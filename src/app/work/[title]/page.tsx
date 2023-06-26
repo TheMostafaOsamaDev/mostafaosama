@@ -45,7 +45,6 @@ function OnlySingleProject({ params }: { params: { title: string } }) {
 
   return (
       <div className="single-proj-container
-        py-28
         flex flex-col items-center divide-y gap-[40px]">
           {error && <h1 className="error-msg-fetch h-[100vh]"><Warning/> {error}</h1>}
         { !isLoading && <SingleProjectPage proj={project as Project} /> }

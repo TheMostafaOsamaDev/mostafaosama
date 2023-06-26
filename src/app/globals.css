@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 body {
+  @apply pb-20;
+  position: relative;
   overflow-x: hidden;
   min-height: 100vh;
 }

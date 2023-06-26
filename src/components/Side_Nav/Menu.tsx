@@ -54,12 +54,12 @@ const layoutVarient ={
 
 function Menu({ isOpen }: { isOpen: boolean }) {
   let pathname = usePathname();
-  pathname = pathname.length === 1 ? pathname : pathname.split('/')[1];
+  pathname = pathname === "/" ? pathname : `/${pathname.split('/')[1]}`;
+
 
   const disableBurgerButton = (e : any) => {
     (document.querySelector(".burger-btn") as HTMLElement)?.click();
   }
-
 
   const linksElements = [
     { name: "home", link: "/" },
@@ -69,7 +69,7 @@ function Menu({ isOpen }: { isOpen: boolean }) {
     <motion.button
       variants={linksVarient}
       key={el.name + "-ver-navbar-link"}
-      className={"capitalize w-full " + (pathname === el.link.split('/')[1] ? "active" : "")}
+      className={"capitalize w-full " + (pathname === el.link ? "active" : "")}
     >
       <Link href={el.link} className="w-full h-full"
         onClick={disableBurgerButton}
