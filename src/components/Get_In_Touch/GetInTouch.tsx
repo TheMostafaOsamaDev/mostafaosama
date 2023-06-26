@@ -16,7 +16,6 @@ function GetInTouch() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("environments var:", process.env.NEXT_PUBLIC_GMAIL_ID)
     try {
       if (!formRef.current) {
         return setError("Please try again");
