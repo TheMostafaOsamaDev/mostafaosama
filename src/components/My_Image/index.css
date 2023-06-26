@@ -26,7 +26,7 @@
 
 .personal-image-container .title-container {
   @apply absolute bottom-0 w-full h-fit overflow-hidden;
-  background: linear-gradient(transparent, rgba(236, 236, 236, 0.551));
+  background: linear-gradient(transparent, #1d4fd868);
 
 }
 
@@ -34,6 +34,15 @@
   @apply uppercase sm:text-2xl sm:text-center lg:text-4xl font-bold p-4
   w-full text-main-black;
 }
+
+.personal-image-container .title-container .name {
+  @apply !py-0 pb-2;
+  background: -webkit-linear-gradient(#1d4ed8, #6d28d9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 
 @media (width >= 991px) {
   .personal-image-container {

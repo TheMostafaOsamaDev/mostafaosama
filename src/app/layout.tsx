@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer/Footer";
 import "./globals.css";
-import MainNavbar from "@/components/MainNavbar";
+import MainNavbar from "@/components/Nav/MainNavbar";
 import { IBM_Plex_Sans } from "next/font/google";
 import { Suspense } from "react";
 import Loading from "./loading";
@@ -22,14 +22,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log("Main Layout");
   return (
     <html lang="en">
       <link rel="icon" href="/icon.png" sizes="any" />
       <body
         className={main_font.className + " relative"}
         suppressHydrationWarning={true}
-      > 
+      >
         <MainNavbar />
         <Suspense fallback={<Loading />}>{children}</Suspense>
         <Footer />

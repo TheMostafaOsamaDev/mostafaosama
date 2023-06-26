@@ -3,6 +3,12 @@ import "./index.css";
 import Image from "next/image";
 import myImage from "@/assets/my_image.jpg";
 import { motion } from "framer-motion";
+import { Poppins } from "next/font/google";
+
+const poppinsFont = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["devanagari"]
+})
 
 function MyImage() {
   return (
@@ -39,7 +45,25 @@ function MyImage() {
         priority={true}
       />
 
-      <div className="title-container">
+      <div
+        className={poppinsFont.className + " title-container"}
+        >
+        <motion.h1
+          className="name"
+          initial={{
+            opacity: 0
+          }}
+          animate={{
+            opacity: 1
+          }}
+          transition={{
+            delay: 2,
+            duration: 0.8,
+            type: "spring"
+          }}
+        >
+          mostafa.osama
+        </motion.h1>
         <motion.h1
           initial={{
             y: 200,

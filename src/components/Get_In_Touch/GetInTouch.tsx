@@ -3,66 +3,81 @@ import { FormEvent, useRef, useState, RefObject } from "react";
 import SubmitBtn from "./SubmitBtn";
 import "./index.css";
 import Warning from "../Icons/Warning";
+import emailjs from "@emailjs/browser";
 
 function GetInTouch() {
-  const emailRef = useRef<HTMLInputElement|undefined>();
-  const bodyRef = useRef<HTMLTextAreaElement|undefined>();
+  const formRef = useRef<HTMLFormElement | undefined>();
+  const emailRef = useRef<HTMLInputElement>();
+  const fullNameRef = useRef<HTMLInputElement>();
+  const messageRef = useRef<HTMLTextAreaElement>();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = async ( e:FormEvent<HTMLFormElement> ) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const email = emailRef.current?.value;
-      const body = bodyRef.current?.value;
-
-      const data = {
-        email,
-        body
+      if (!formRef.current) {
+        return setError("Please try again");
       }
-      
       setIsLoading(true);
-      const res = await fetch("/api/send-mail", {
-        method: "post",
-        body: JSON.stringify(data)
-      });
+
+      const res = await emailjs.sendForm(
+        process.env.NEXT_PUBLIC_GMAIL_ID as string,
+        process.env.NEXT_PUBLIC_TEMPLATE_ID as string,
+        e.target as any,
+        process.env.NEXT_PUBLIC_PUBLICK_KEY as string
+      );
+
+      console.log(res);
 
       if(res.status === 200) {
-        emailRef.current!.value = "";
-        bodyRef.current!.value = "";
         setIsSuccess(true);
-      } 
-      else if(res.status === 403) {
-        throw new Error("Please fill all fields!");
-      } else if(res.status === 400) {
-        throw new Error("Email shape is wrong!");
+        emailRef.current!.value = "";
+        fullNameRef.current!.value = "";
+        messageRef.current!.value = "";
       } else {
-        throw new Error("Some error occured!");
+        throw new Error("Failed, please try again");
       }
-    } catch(err : any) {
+    } catch (err: any) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
+  console.log(isLoading);
 
   return (
-    <form className='message-form' onSubmit={handleSubmit}>
-      {error && <h3 className="error-msg-fetch"><Warning /> {error}</h3>}
-      
+    <form
+      className="message-form"
+      onSubmit={handleSubmit}
+      ref={formRef as RefObject<HTMLFormElement>}
+    >
+      {error && (
+        <h3 className="error-msg-fetch">
+          <Warning /> {error}
+        </h3>
+      )}
+
+      <label htmlFor="fullName">Name:</label>
+      <input required type="text" id="fullName" name="fullName"
+        ref={fullNameRef as any}
+        />
+
       <label htmlFor="email">Email:</label>
-      <input ref={emailRef as RefObject<HTMLInputElement>}
-      required type='email' id='email' />
+      <input required type="email" id="email" name="email"
+        ref={emailRef as any}
+        />
 
       <label htmlFor="body">Message:</label>
-      <textarea ref={bodyRef as RefObject<HTMLTextAreaElement>}
-      required id='body'></textarea>
+      <textarea required id="message" name="message"
+        ref={messageRef as any}
+        ></textarea>
 
       <SubmitBtn isSuccess={isSuccess} isLoading={isLoading} />
     </form>
-  )
+  );
 }
 
-export default GetInTouch
+export default GetInTouch;

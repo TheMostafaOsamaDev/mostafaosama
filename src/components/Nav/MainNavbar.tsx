@@ -6,10 +6,8 @@ import BurgerMenu from "./Side_Nav/BurgerMenu";
 function MainNavbar() {
   let { height, isMobile } = useScreenSizes();
 
-  console.log(isMobile)
-
-  if(isMobile) {
-    return <BurgerMenu mode="sm" screenHeight={height} />
+  if (isMobile) {
+    return <BurgerMenu mode="sm" screenHeight={height} />;
   }
 
   return (
