@@ -11,7 +11,6 @@ import GetInTouch from "@/components/Get_In_Touch/GetInTouch";
 
 export default function Home() {
 
-
   return (
     <>
       <main
