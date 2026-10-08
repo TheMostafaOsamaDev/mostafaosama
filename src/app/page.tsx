@@ -48,8 +48,10 @@ export default async function Home() {
           </a>
           , an offline-first e-book reader that treats Arabic as carefully as English.
         </p>
-        {/* TODO(mostafa): add availability once decided, e.g. "I'm open to remote full-stack roles." */}
-        <p>I studied Computer Science and AI at Beni Suef University, and I live in Cairo.</p>
+        <p>
+          I studied Computer Science and AI at Beni Suef University, and I live in Cairo. I&apos;m open to remote
+          full-stack roles.
+        </p>
       </div>
 
       <section aria-labelledby="work" className="mt-16">
