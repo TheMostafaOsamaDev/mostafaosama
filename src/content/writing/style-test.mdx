@@ -1,0 +1,32 @@
+export const metadata = {
+  title: "Style test",
+  description: "A draft that exercises every element a post can use. It never ships.",
+  date: "2026-10-08",
+  draft: true,
+};
+
+This draft exists so the writing pages have something to render in development. It covers every element a real post is likely to use. Production builds treat it as missing.
+
+## Paragraphs and links
+
+Body text is set at 17px on a 28px line, and the column stops near 62 characters. A [link to Riwaq](https://github.com/TheMostafaOsamaDev/Riwaq-Reader) sits in ink with a quiet underline that turns blue on hover.
+
+## Lists
+
+- An unordered item with a short sentence.
+- A second item that runs a little longer, so it wraps onto a second line at phone width and shows the hanging indent.
+
+1. An ordered step.
+2. Another step, because order matters here.
+
+### A third-level heading
+
+> A blockquote reads as a quieter aside, set in the muted color with a hairline rule.
+
+## Code
+
+Inline code like `retryWithJitter(attempt)` keeps to the body size. Blocks scroll sideways instead of wrapping:
+
+```ts
+const delay = Math.random() * Math.min(cap, base * 2 ** attempt);
+```

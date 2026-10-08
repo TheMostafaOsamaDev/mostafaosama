@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Tokens: see CLAUDE.md. Light is the primary design; dark follows the OS setting. */
+:root {
+  --paper: #f6f7f5;
+  --ink: #14171a;
+  --muted: #646b72;
+  --hairline: #dde0e3;
+  --span: #b9c0c7;
+  --crit: #2337c6;
+  --err: #c4281c;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #101317;
+    --ink: #e8eaed;
+    --muted: #9aa1a9;
+    --hairline: #262b31;
+    --span: #3a4149;
+    --crit: #8c9bff;
+    --err: #ff6b5e;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-hairline: var(--hairline);
+  --color-span: var(--span);
+  --color-crit: var(--crit);
+  --color-err: var(--err);
+
+  --font-sans: var(--font-instrument), "Helvetica Neue", Arial, sans-serif;
+
+  --text-name: 1.25rem;
+  --text-name--line-height: 1.75rem;
+  --text-title: 1.875rem;
+  --text-title--line-height: 2.125rem;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.75rem;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.25rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--crit);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--crit);
+    color: var(--paper);
+  }
+}
+
+@layer components {
+  /* Inline prose links: ink text, quiet underline that turns critical on hover. */
+  .link {
+    color: var(--ink);
+    text-decoration-line: underline;
+    text-decoration-color: var(--span);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms;
+  }
+  .link:hover {
+    text-decoration-color: var(--crit);
+  }
+}
