@@ -1,0 +1,38 @@
+[
+  {
+    "id": "648db15ddb7ab09b3359347b",
+    "v": 0,
+    "name": "Next.js",
+    "path": "https://i.ibb.co/TT99RXq/next.png"
+  },
+  {
+    "id": "648db22edb7ab09b3359347d",
+    "v": 0,
+    "name": "SASS",
+    "path": "https://i.ibb.co/7rS37MR/sass.png"
+  },
+  {
+    "id": "648db347db7ab09b3359347f",
+    "v": 0,
+    "name": "Node.js",
+    "path": "https://i.ibb.co/4MpFdkg/nodejs.png"
+  },
+  {
+    "id": "648db3d9db7ab09b33593481",
+    "v": 0,
+    "name": "React",
+    "path": "https://i.ibb.co/KKHxpQc/react.png"
+  },
+  {
+    "id": "648db4a6db7ab09b33593483",
+    "v": 0,
+    "name": "MongoDB",
+    "path": "https://i.ibb.co/sCvqkvq/mongodb.png"
+  },
+  {
+    "id": "64947283bed9a5181e080ae8",
+    "v": 0,
+    "name": "Python",
+    "path": "https://i.ibb.co/jD9Dr8s/python.png"
+  }
+]

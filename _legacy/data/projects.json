@@ -1,0 +1,112 @@
+[
+  {
+    "id": "648da90f2dfc6a1329a1afc7",
+    "v": 0,
+    "date": "Mar 16, 2023",
+    "desc": "The Saraha App is an anonymous messaging app built with Node.js, Express, MongoDB, Mongoose, bcrypt, Express Validator, Nodemailer, Multer, and EJS as a template engine. It allows users to send anonymous messages to each other without revealing their identity.",
+    "isTop": true,
+    "liveDemo": "https://the-saraha-app.onrender.com/",
+    "paths": [
+      "https://i.ibb.co/gZbc9PL/1.png",
+      "https://i.ibb.co/rdNyxyX/2.png",
+      "https://i.ibb.co/JFT24mZ/3.png",
+      "https://i.ibb.co/zNrs652/4.png",
+      "https://i.ibb.co/WzrbBpv/5.png",
+      "https://i.ibb.co/KXrPWQZ/6.png"
+    ],
+    "repo": "https://github.com/MostafaOS21/the-saraha-app",
+    "skills": [
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "MVC"
+    ],
+    "title": "Saraha"
+  },
+  {
+    "id": "64937aff47a70498a3e80d30",
+    "v": 0,
+    "date": "Apr 1, 2023",
+    "desc": "A system for BNS University to manage exams day, students' absence, cheating in exams, exams table, and the picture and sitting number of each student in the current exam.",
+    "isTop": true,
+    "liveDemo": "https://university-exams-system-bns.onrender.com",
+    "paths": [
+      "https://i.ibb.co/9GqCHf1/Screenshot-2023-04-16-041034.png",
+      "https://i.ibb.co/tJtmRsP/Screenshot-2023-04-16-041106.png",
+      "https://i.ibb.co/yd1pq3q/Whats-App-Image-2023-04-03-at-21-18-38.jpg",
+      "https://i.ibb.co/k3D9Vcy/Whats-App-Image-2023-04-03-at-21-18-40.jpg",
+      "https://i.ibb.co/4ND9RGP/Whats-App-Image-2023-04-03-at-21-18-41.jpg",
+      "https://i.ibb.co/FWK9bRY/Whats-App-Image-2023-04-03-at-21-18-ssss40.jpg",
+      "https://i.ibb.co/pnxv4by/Whats-App-Image-2023-sss04-03-at-21-18-41.jpg"
+    ],
+    "repo": "https://github.com/MostafaOS21/university-exams-bns",
+    "skills": [
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "MVC"
+    ],
+    "title": "University exams system"
+  },
+  {
+    "id": "649383be47a70498a3e80d32",
+    "v": 0,
+    "date": "Apr 14, 2023",
+    "desc": "This project uses the GitHub API to get user repositories and followers, as well as what the user is following. It was built using:",
+    "isTop": false,
+    "liveDemo": "https://github-users-finder-api.netlify.app",
+    "paths": [
+      "https://i.ibb.co/zFwzZ7Z/git-finder-1.png",
+      "https://i.ibb.co/cC72wxZ/Screenshot-2023-04-16-041349.png",
+      "https://i.ibb.co/mGnNJXk/sss.png"
+    ],
+    "repo": "https://github.com/MostafaOS21/github-user-finder",
+    "skills": [
+      "React.js",
+      "SASS"
+    ],
+    "title": "GitHub user finder"
+  },
+  {
+    "id": "649384fe47a70498a3e80d34",
+    "v": 0,
+    "date": "Apr 13, 2022 ",
+    "desc": "This is an attempt to make a design for the pizza hut website [ Egypt]. The entire app is front-end with no framework.\n",
+    "isTop": false,
+    "liveDemo": "https://mostafaos21.github.io/Pizzahut/",
+    "paths": [
+      "https://i.ibb.co/hcY5Q1h/pizzahut-1.png",
+      "https://i.ibb.co/7gbxB6Q/pizzahut-2.png",
+      "https://i.ibb.co/1dXXGS5/pizzahut-3.png"
+    ],
+    "repo": "https://github.com/MostafaOS21/Pizzahut",
+    "skills": [
+      "SASS",
+      "Vanilla JS",
+      "Bootstrap",
+      "HTML",
+      "CSS",
+      "PUG"
+    ],
+    "title": "Pizza Hut Clone"
+  },
+  {
+    "id": "6493861847a70498a3e80d36",
+    "v": 0,
+    "date": "Nov 23, 2022 ",
+    "desc": "This is a book tracking app that divides your reading list into 3 shelves: 1 - Currently Reading 2 - Want To Read 3 - Read. This was the final project in the Udacity React training.\n",
+    "isTop": true,
+    "liveDemo": "https://my-books-tracker.netlify.app",
+    "paths": [
+      "https://i.ibb.co/6B6krQb/books-tracker-1.png",
+      "https://i.ibb.co/zQ15jL6/books-tracker-2.png",
+      "https://i.ibb.co/xSQ9SSX/books-tracker-3.png"
+    ],
+    "repo": "https://github.com/MostafaOS21/my-books-tracker",
+    "skills": [
+      "React.js",
+      "API"
+    ],
+    "title": "Books tracker"
+  }
+]
