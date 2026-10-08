@@ -8,6 +8,14 @@ function Loading() {
   return <p className="text-small text-muted">Loading the simulation.</p>;
 }
 
+// Space each experiment takes once loaded (measured, rounded down), held from the first paint so
+// its arrival doesn't push the page around. Phone first, then from the `sm` breakpoint.
+const reserve: Record<LabEntry["slug"], string> = {
+  "retry-storm": "min-h-[40rem] sm:min-h-[30rem]",
+  "exactly-once": "min-h-[54rem] sm:min-h-[42rem]",
+  "two-limiters": "min-h-[43rem] sm:min-h-[34rem]",
+};
+
 // Each experiment is its own chunk, fetched only on its page and never rendered on the server.
 const experiments: Record<LabEntry["slug"], React.ComponentType> = {
   "retry-storm": dynamic(() => import("./retry-storm/Experiment"), { ssr: false, loading: Loading }),
@@ -32,8 +40,10 @@ const Boundary = catchError(Crashed);
 export function ExperimentLoader({ slug }: { slug: LabEntry["slug"] }) {
   const Experiment = experiments[slug];
   return (
-    <Boundary>
-      <Experiment />
-    </Boundary>
+    <div className={reserve[slug]}>
+      <Boundary>
+        <Experiment />
+      </Boundary>
+    </div>
   );
 }

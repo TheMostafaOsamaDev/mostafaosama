@@ -18,15 +18,21 @@ export function OnceChart({ result, compact = false }: { result: OnceResult; com
         {compact ? null : (
           <thead>
             <tr className="text-left text-small text-muted">
-              <th scope="col" className="pb-2 font-normal">Payment</th>
+              <th scope="col" className="pb-2 font-normal">
+                Payment
+              </th>
               <th scope="col" className="pb-2 font-normal">
                 <span className="max-sm:sr-only">Deliveries over time</span>
                 <span className="sm:hidden" aria-hidden>
                   Deliveries
                 </span>
               </th>
-              <th scope="col" className="pb-2 text-right font-normal">No key</th>
-              <th scope="col" className="pb-2 text-right font-normal">With key</th>
+              <th scope="col" className="pb-2 text-right font-normal">
+                No key
+              </th>
+              <th scope="col" className="pb-2 text-right font-normal">
+                With key
+              </th>
             </tr>
           </thead>
         )}
@@ -60,7 +66,9 @@ export function OnceChart({ result, compact = false }: { result: OnceResult; com
                 </td>
                 {compact ? null : (
                   <>
-                    <td className={`py-1.5 pr-1 text-right text-small ${charged > p.amount ? "text-err" : ""}`}>{money(charged)}</td>
+                    <td className={`py-1.5 pr-1 text-right text-small ${charged > p.amount ? "text-err" : ""}`}>
+                      {money(charged)}
+                    </td>
                     <td className="py-1.5 pl-4 text-right text-small">{money(chargedWithKey)}</td>
                   </>
                 )}
@@ -77,7 +85,9 @@ export function OnceChart({ result, compact = false }: { result: OnceResult; com
               <td className="pt-2 text-muted">
                 {result.log.length} deliveries for {result.payments.length} payments
               </td>
-              <td className={`pt-2 pr-1 text-right font-semibold ${result.withoutKey.total > result.expected ? "text-err" : ""}`}>
+              <td
+                className={`pt-2 pr-1 text-right font-semibold ${result.withoutKey.total > result.expected ? "text-err" : ""}`}
+              >
                 {money(result.withoutKey.total)}
               </td>
               <td className="pt-2 pl-4 text-right font-semibold">{money(result.withKey.total)}</td>

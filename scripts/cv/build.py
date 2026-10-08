@@ -1,7 +1,12 @@
-"""Render the FlowCV-style CV from a content dict to HTML (printed to PDF by Chromium).
+"""Render the FlowCV-style CV from a content dict to HTML, then print it to PDF with Chrome.
 
-Usage: python3 build.py original|new OUT.html
-Every measurement below is in pt and comes from the FlowCV export (pdfminer).
+    python3 scripts/cv/build.py new /tmp/cv.html
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --no-pdf-header-footer \
+        --virtual-time-budget=8000 --print-to-pdf=public/mostafa-osama-cv.pdf file:///tmp/cv.html
+
+Edit the NEW dict below. Keep it to one page: check the PDF has a single page before committing.
+`original` re-renders the FlowCV export's own text; it is only for checking layout fidelity.
+Every measurement below is in pt and comes from the FlowCV export (measured with pdfminer).
 """
 import html
 import sys

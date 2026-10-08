@@ -7,7 +7,8 @@ import { previews } from "@/lab/previews";
 
 export const metadata: Metadata = {
   title: "Lab",
-  description: "Small simulations of things that go wrong in backends: retry storms, duplicate deliveries and rate limits.",
+  description:
+    "Small simulations of things that go wrong in backends: retry storms, duplicate deliveries and rate limits.",
   alternates: { canonical: "/lab" },
 };
 

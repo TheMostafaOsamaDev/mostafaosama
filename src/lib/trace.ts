@@ -31,7 +31,15 @@ export function buildTrace(): { rows: TraceRow[]; axis: TraceAxis } {
     ...roles.map((r) => ({ ...r, entry: r.entry ? (byId.get(r.entry) ?? null) : null, parent: undefined })),
     ...projects
       .filter((p) => !opened.has(p.id))
-      .map((p) => ({ id: p.id, label: p.name, start: p.start, end: p.end, critical: false, entry: p, parent: p.parent })),
+      .map((p) => ({
+        id: p.id,
+        label: p.name,
+        start: p.start,
+        end: p.end,
+        critical: false,
+        entry: p,
+        parent: p.parent,
+      })),
   ];
 
   const sorted = items

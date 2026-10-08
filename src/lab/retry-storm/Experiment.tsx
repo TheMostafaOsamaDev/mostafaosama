@@ -36,7 +36,11 @@ export default function RetryStorm() {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         rects.forEach((r, i) => {
-          gsap.from(r, { attr: { y: Number(before[i].y), height: Number(before[i].height) }, duration: 0.45, ease: "power2.out" });
+          gsap.from(r, {
+            attr: { y: Number(before[i].y), height: Number(before[i].height) },
+            duration: 0.45,
+            ease: "power2.out",
+          });
         });
       });
       return () => mm.revert();
@@ -68,8 +72,8 @@ export default function RetryStorm() {
           <>
             <RetryChart result={result} yMax={yMax} />
             <figcaption className="mt-3 text-small text-muted">
-              Requests arriving every 100ms. The shaded stretch is the outage. Ink were served, red failed and will retry.
-              The dashed line is capacity, {CONFIG.capacity} a second.
+              Requests arriving every 100ms. The shaded stretch is the outage. Ink were served, red failed and will
+              retry. The dashed line is capacity, {CONFIG.capacity} a second.
             </figcaption>
           </>
         }
@@ -77,12 +81,12 @@ export default function RetryStorm() {
           mode === "fixed" ? (
             <p>
               The service comes back at {CONFIG.outage}s, and the clients come back with it, all at once. Load peaks at{" "}
-              <b className="font-semibold tabular-nums">{result.peakPerSecond.toLocaleString("en")}</b> requests a second
-              against a capacity of {CONFIG.capacity}, so most of each wave fails and retries together again.{" "}
+              <b className="font-semibold tabular-nums">{result.peakPerSecond.toLocaleString("en")}</b> requests a
+              second against a capacity of {CONFIG.capacity}, so most of each wave fails and retries together again.{" "}
               {recovered === null ? (
                 <>
-                  After {CONFIG.horizon}s, <b className="font-semibold tabular-nums">{result.waiting}</b> of {clients} clients
-                  are still waiting.
+                  After {CONFIG.horizon}s, <b className="font-semibold tabular-nums">{result.waiting}</b> of {clients}{" "}
+                  clients are still waiting.
                 </>
               ) : (
                 <>Everyone is through {recovered}s after recovery, the hard way.</>
@@ -91,12 +95,14 @@ export default function RetryStorm() {
           ) : (
             <p>
               With full jitter each client waits a random part of its backoff, so the same {clients} clients peak at{" "}
-              <b className="font-semibold tabular-nums">{result.peakPerSecond.toLocaleString("en")}</b> requests a second.{" "}
+              <b className="font-semibold tabular-nums">{result.peakPerSecond.toLocaleString("en")}</b> requests a
+              second.{" "}
               {recovered === null ? (
                 <>Some are still waiting at {CONFIG.horizon}s.</>
               ) : (
                 <>
-                  Everyone is through <b className="font-semibold tabular-nums">{recovered}s</b> after the service recovers.
+                  Everyone is through <b className="font-semibold tabular-nums">{recovered}s</b> after the service
+                  recovers.
                 </>
               )}
             </p>

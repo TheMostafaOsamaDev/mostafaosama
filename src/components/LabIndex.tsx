@@ -21,13 +21,16 @@ export function LabIndex({ items }: { items: LabIndexItem[] }) {
     () => {
       const panes = gsap.utils.toArray<HTMLElement>("[data-pane]", root.current);
       const mm = gsap.matchMedia();
-      mm.add({ motion: "(prefers-reduced-motion: no-preference)", still: "(prefers-reduced-motion: reduce)" }, (ctx) => {
-        panes.forEach((p) => {
-          const on = p.dataset.pane === active;
-          if (ctx.conditions?.still) gsap.set(p, { autoAlpha: on ? 1 : 0, y: 0 });
-          else gsap.to(p, { autoAlpha: on ? 1 : 0, y: on ? 0 : 6, duration: on ? 0.28 : 0.16, ease: "power2.out" });
-        });
-      });
+      mm.add(
+        { motion: "(prefers-reduced-motion: no-preference)", still: "(prefers-reduced-motion: reduce)" },
+        (ctx) => {
+          panes.forEach((p) => {
+            const on = p.dataset.pane === active;
+            if (ctx.conditions?.still) gsap.set(p, { autoAlpha: on ? 1 : 0, y: 0 });
+            else gsap.to(p, { autoAlpha: on ? 1 : 0, y: on ? 0 : 6, duration: on ? 0.28 : 0.16, ease: "power2.out" });
+          });
+        },
+      );
       return () => mm.revert();
     },
     { scope: root, dependencies: [active] },

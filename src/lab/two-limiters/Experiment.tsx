@@ -40,16 +40,24 @@ export default function TwoLimiters() {
       <LabFrame
         controls={
           <div className="w-56">
-            <Slider label={`Burst at ${CONFIG.burstAt}s`} value={burst} min={10} max={60} step={5} format={(v) => `${v} requests`} onChange={setBurst} />
+            <Slider
+              label={`Burst at ${CONFIG.burstAt}s`}
+              value={burst}
+              min={10}
+              max={60}
+              step={5}
+              format={(v) => `${v} requests`}
+              onChange={setBurst}
+            />
           </div>
         }
         figure={
           <>
             <LimiterChart result={result} />
             <figcaption className="mt-3 text-small text-muted">
-              The same {result.requests} requests reach both limiters: two a second, plus one burst. Ink were accepted, red
-              rejected. The burst column is compressed (see the break) and split by proportion, so ordinary traffic stays
-              readable.
+              The same {result.requests} requests reach both limiters: two a second, plus one burst. Ink were accepted,
+              red rejected. The burst column is compressed (see the break) and split by proportion, so ordinary traffic
+              stays readable.
             </figcaption>
           </>
         }
@@ -60,10 +68,10 @@ export default function TwoLimiters() {
             </p>
           ) : (
             <p>
-              Both limiters let <b className="font-semibold tabular-nums">{tb.burstAccepted}</b> of the {burst} burst requests
-              through. The token bucket refills faster than ordinary traffic drains it, so everything after the burst is
-              accepted. The sliding window still counts the burst for a full {CONFIG.slidingWindow.windowSeconds} seconds,
-              so it turns away ordinary traffic for{" "}
+              Both limiters let <b className="font-semibold tabular-nums">{tb.burstAccepted}</b> of the {burst} burst
+              requests through. The token bucket refills faster than ordinary traffic drains it, so everything after the
+              burst is accepted. The sliding window still counts the burst for a full{" "}
+              {CONFIG.slidingWindow.windowSeconds} seconds, so it turns away ordinary traffic for{" "}
               <b className="font-semibold text-err tabular-nums">{sw.steadyRejectedFor.toFixed(1)}s</b> after it.
             </p>
           )

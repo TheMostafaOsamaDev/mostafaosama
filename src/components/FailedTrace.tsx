@@ -83,7 +83,11 @@ function Row({
           style={{ left: `${left}%`, width: `${width}%` }}
         />
       </span>
-      <span className={`col-start-2 row-start-1 text-right text-small sm:col-start-3 ${failed ? "text-err" : "text-muted"}`}>{ms}</span>
+      <span
+        className={`col-start-2 row-start-1 text-right text-small sm:col-start-3 ${failed ? "text-err" : "text-muted"}`}
+      >
+        {ms}
+      </span>
     </li>
   );
 }

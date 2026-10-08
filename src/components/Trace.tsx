@@ -69,7 +69,12 @@ export function Trace({ rows, axis }: { rows: TraceRow[]; axis: TraceAxis }) {
     // Wait for React to unhide the panel, then grow it from nothing to its natural height.
     requestAnimationFrame(() => {
       const el = root.current?.querySelector<HTMLElement>(`#entry-${id}`);
-      if (el) gsap.fromTo(el, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.34, ease: "power2.out", clearProps: "height,opacity" });
+      if (el)
+        gsap.fromTo(
+          el,
+          { height: 0, opacity: 0 },
+          { height: "auto", opacity: 1, duration: 0.34, ease: "power2.out", clearProps: "height,opacity" },
+        );
     });
   }
 

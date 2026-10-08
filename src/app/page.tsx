@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Portrait } from "@/components/Portrait";
 import { Trace } from "@/components/Trace";
 import { SiteFooter } from "@/components/SiteFooter";
 import { site } from "@/content/site";
@@ -12,11 +13,14 @@ export default async function Home() {
   return (
     <main id="main" className="mx-auto max-w-[40rem] px-4 pt-16 pb-12 sm:px-6 sm:pt-24">
       <header className="flex items-start justify-between gap-6">
-        <div>
-          <h1 className="text-name font-semibold tracking-[-0.01em]">{site.name}</h1>
-          <p className="text-muted">
-            {site.role} at {site.employer.name}
-          </p>
+        <div className="flex items-center gap-4">
+          <Portrait />
+          <div>
+            <h1 className="text-name font-semibold tracking-[-0.01em]">{site.name}</h1>
+            <p className="text-muted">
+              {site.role} at {site.employer.name}
+            </p>
+          </div>
         </div>
         <a href={site.links.cv} className="link text-small">
           CV
@@ -34,7 +38,12 @@ export default async function Home() {
         </p>
         <p>
           I started on the frontend, and I still care how the result feels to the person using it. Outside work I build{" "}
-          <a href="https://github.com/TheMostafaOsamaDev/Riwaq-Reader" className="link" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/TheMostafaOsamaDev/Riwaq-Reader"
+            className="link"
+            target="_blank"
+            rel="noreferrer"
+          >
             Riwaq
           </a>
           , an offline-first e-book reader that treats Arabic as carefully as English.

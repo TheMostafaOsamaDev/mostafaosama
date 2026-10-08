@@ -13,26 +13,41 @@ function StripChart({ strip, yMax, label, compact }: { strip: Strip; yMax: numbe
         <p className="mb-1.5 flex justify-between gap-4 text-small">
           <span>{label}</span>
           <span className="text-muted tabular-nums">
-            {strip.acceptedTotal} accepted, <span className={strip.rejectedTotal ? "text-err" : ""}>{strip.rejectedTotal} rejected</span>
+            {strip.acceptedTotal} accepted,{" "}
+            <span className={strip.rejectedTotal ? "text-err" : ""}>{strip.rejectedTotal} rejected</span>
           </span>
         </p>
       )}
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className={`block w-full ${compact ? "h-12" : "h-24"}`} aria-hidden>
-        {strip.accepted.map((a, i) => {
-          const r = strip.rejected[i];
-          const total = a + r;
-          // Too tall for the scale: draw it full height, split by proportion, with a break mark near the top.
-          const scaled = total > yMax;
-          const ha = scaled ? (a / total) * H : h(a);
-          const hr = scaled ? (r / total) * H : h(r);
-          return (
-            <g key={i} data-col>
-              <rect x={i * bw} width={bw * 0.7} y={H - ha} height={ha} className="fill-ink" />
-              <rect x={i * bw} width={bw * 0.7} y={H - ha - hr} height={hr} className="fill-err" />
-              {scaled ? <rect x={i * bw - 2} width={bw * 0.7 + 4} y={H * 0.12} height={3} className="fill-paper" /> : null}
-            </g>
-          );
-        })}
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        preserveAspectRatio="none"
+        className={`block w-full ${compact ? "h-12" : "h-24"}`}
+        aria-hidden
+      >
+        {compact ? (
+          <>
+            <path d={stack(strip, yMax, bw, "accepted")} className="fill-ink" />
+            <path d={stack(strip, yMax, bw, "rejected")} className="fill-err" />
+          </>
+        ) : (
+          strip.accepted.map((a, i) => {
+            const r = strip.rejected[i];
+            const total = a + r;
+            // Too tall for the scale: draw it full height, split by proportion, with a break mark near the top.
+            const scaled = total > yMax;
+            const ha = scaled ? (a / total) * H : h(a);
+            const hr = scaled ? (r / total) * H : h(r);
+            return (
+              <g key={i} data-col>
+                <rect x={i * bw} width={bw * 0.7} y={H - ha} height={ha} className="fill-ink" />
+                <rect x={i * bw} width={bw * 0.7} y={H - ha - hr} height={hr} className="fill-err" />
+                {scaled ? (
+                  <rect x={i * bw - 2} width={bw * 0.7 + 4} y={H * 0.12} height={3} className="fill-paper" />
+                ) : null}
+              </g>
+            );
+          })
+        )}
         <line x1={0} x2={W} y1={H} y2={H} className="stroke-hairline" vectorEffect="non-scaling-stroke" />
       </svg>
     </div>
@@ -68,4 +83,18 @@ export function LimiterChart({ result, compact = false }: { result: LimiterResul
       )}
     </div>
   );
+}
+
+/** One series of the stacked columns as a single path, for the compact preview. Same proportional rule as above. */
+function stack(strip: Strip, yMax: number, bw: number, part: "accepted" | "rejected"): string {
+  return strip.accepted
+    .map((a, i) => {
+      const r = strip.rejected[i];
+      const total = a + r;
+      const k = total > yMax ? H / total : H / yMax;
+      const [from, size] = part === "accepted" ? [0, a * k] : [a * k, r * k];
+      if (size <= 0) return "";
+      return `M${(i * bw).toFixed(2)} ${(H - from).toFixed(2)}v${(-size).toFixed(2)}h${(bw * 0.7).toFixed(2)}v${size.toFixed(2)}Z`;
+    })
+    .join("");
 }
