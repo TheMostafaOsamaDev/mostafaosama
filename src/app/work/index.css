@@ -1,9 +1,0 @@
-main {
-  @apply pb-20;
-}
-
-.projects-grid {
-  @apply grid w-full sm:px-10 lg:px-16 gap-3 justify-center min-h-[600px]
-  items-start;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
-}
