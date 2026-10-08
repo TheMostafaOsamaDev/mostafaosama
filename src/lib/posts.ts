@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import GithubSlugger from "github-slugger";
 import type { ComponentType } from "react";
 
 export type PostMeta = {
@@ -50,4 +51,25 @@ export function formatPostDate(iso: string): string {
     year: "numeric",
     timeZone: "UTC",
   });
+}
+
+export type Heading = { id: string; text: string; depth: 2 | 3 };
+
+/**
+ * Headings and reading time from the raw MDX, using the same slugger as rehype-slug so the
+ * table of contents links match the ids in the rendered post. Code fences are skipped.
+ */
+export function readOutline(slug: string): { headings: Heading[]; minutes: number } {
+  const source = fs.readFileSync(path.join(DIR, `${slug}.mdx`), "utf8");
+  const prose = source.replace(/```[\s\S]*?```/g, "").replace(/^export const metadata[\s\S]*?\n};?\n/m, "");
+  const slugger = new GithubSlugger();
+  const headings: Heading[] = [];
+  for (const line of prose.split("\n")) {
+    const m = /^(#{2,3})\s+(.+?)\s*$/.exec(line);
+    if (!m) continue;
+    const text = m[2].replace(/[*_`]/g, "");
+    headings.push({ id: slugger.slug(text), text, depth: m[1].length as 2 | 3 });
+  }
+  const words = prose.split(/\s+/).filter(Boolean).length;
+  return { headings, minutes: Math.max(1, Math.round(words / 230)) };
 }

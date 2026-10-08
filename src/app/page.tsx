@@ -63,7 +63,7 @@ export default async function Home() {
           <ul className="mt-4 grid gap-3">
             {posts.map((post) => (
               <li key={post.slug} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4">
-                <Link href={`/writing/${post.slug}`} className="link truncate">
+                <Link href={`/writing/${post.slug}`} prefetch className="link truncate">
                   {post.title}
                 </Link>
                 <span className="text-small text-muted tabular-nums">{formatPostDate(post.date)}</span>
