@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .p { fill: #f6f7f5 } .s { fill: #b9c0c7 } .c { fill: #2337c6 }
+    @media (prefers-color-scheme: dark) { .p { fill: #101317 } .s { fill: #4a525b } .c { fill: #8c9bff } }
+  </style>
+  <rect class="p" width="32" height="32" rx="6"/>
+  <rect class="s" x="5" y="7" width="16" height="4" rx="1"/>
+  <rect class="c" x="11" y="14" width="16" height="4" rx="1"/>
+  <rect class="s" x="17" y="21" width="7" height="4" rx="1"/>
+</svg>
