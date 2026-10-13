@@ -29,8 +29,12 @@ distracting, hover working, light mode handled.
   Strict Mode re-runs effects on the same canvas, so the glow never draws in `next dev`. Production is unaffected.
   For the same reason keep CornerGlow in the **root layout**: a page segment can be hidden and re-shown by React
   `<Activity>` (Cache Components), which would re-run the effect on a dead context.
-- Radial type, centred on the corner: a square of `min(72vmin, 760px)` translated half off-screen, so only its
-  inner quarter shows, faded by a radial mask. Do not grow it into a full-page background.
+- **All glow settings live in `src/components/glow.settings.json`** (validated by `parseSettings` in `glow.ts`).
+  Tune them in the dev-only studio (below) rather than by hand.
+- Placement: a box `reach` (vmin, capped at `maxReach` px) square in the top-right corner, clipping a radial square
+  twice that size centred on the corner, faded by a radial mask. `attach: "fixed"` keeps it in the corner while
+  scrolling; `"page"` lets it scroll away (the box clips, so it never widens the page). Keep it a corner accent,
+  not a full-page background.
 - One palette for both themes, starting with the dark page background **twice** (a radial Grainient is still
   mid-ramp at its canvas edge; without the extra stop the glow ends in a ring). Light mode is Grainient's own
   `lightMode`, which turns those stops into pure white, so the light `--paper` must stay `#ffffff` and the dark
@@ -46,6 +50,17 @@ distracting, hover working, light mode handled.
   - falloff along the diagonal reaches the exact page background by ~320px with no step (dark 11,12,15; light 255,255,255);
   - a brisk mouse sweep over the glow changes it visibly (max ≥ 15 levels), a sweep elsewhere doesn't, and reduced motion gives 0;
   - forcing `WEBGL_lose_context` makes it disappear cleanly and come back by itself within ~4s.
+
+## Glow studio (development only)
+
+`npm run dev`, then open `/studio`. It renders the same `CornerGlowView` the site uses over a full, scrolling sample
+page, with React Bits' Background Studio controls for Grainient (same ranges), plus Reach / Max reach (with a live
+"reaches N px, X% of the width" readout), scroll behaviour, a Light Mode preview and Replay intro. **Save to site**
+POSTs to `/studio/save`, which validates and writes `glow.settings.json` (localhost only).
+
+- The page and route are `page.dev.tsx` / `route.dev.ts`. `next.config.ts` only recognises `.dev.*` page extensions
+  in the dev-server phase, so production builds don't contain `/studio` at all (verified: 404, no chunk mentions it).
+- The site's own CornerGlow hides itself on `/studio`, so only the glow being edited is visible.
 
 ## Quality bar
 

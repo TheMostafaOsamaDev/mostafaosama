@@ -1,7 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { glowSettings, type GlowSettings } from "./glow";
 
 // React Bits' Grainient, installed unmodified from the registry. WebGL only exists in the browser and the
 // glow is decoration, so it loads after the page and never on the server.
@@ -15,25 +17,41 @@ function subscribe(onChange: () => void) {
   return () => mq.removeEventListener("change", onChange);
 }
 
-/**
- * One palette for both themes. It starts with the dark page background, twice: a radial Grainient is still
- * mid-ramp at the edge of its canvas, so the extra stop makes the colour reach the background before the
- * edge and the glow dissolves into the page instead of leaving a ring. Light mode uses Grainient's own
- * `lightMode`, which turns those background stops into pure white and lifts the tints; that's why the light
- * page background is exactly #ffffff.
- */
-const PALETTE = ["#0b0c0f", "#0b0c0f", "#0e161d", "#16303f", "#2a5568", "#7fa7b4"];
-
 /** Remounts after a GPU reset at most this often, so a broken GPU can't put it in a loop. */
 const RECOVER_AFTER_MS = 1000;
 const MAX_RECOVERIES = 3;
 
+/** The site's glow: saved settings, following the visitor's colour scheme. */
 export function CornerGlow() {
   const scheme = useSyncExternalStore(
     subscribe,
     () => (window.matchMedia(DARK_QUERY).matches ? "dark" : "light"),
     () => null,
   );
+  // The dev-only /studio page draws its own glow from the settings being edited.
+  const studio = usePathname().startsWith("/studio");
+  if (!scheme || studio) return null;
+  return <CornerGlowView settings={glowSettings} scheme={scheme} />;
+}
+
+/**
+ * The glow itself, shared by the site and the /studio page.
+ *
+ * The palette starts with the dark page background (twice, in the saved settings): a radial Grainient is still
+ * mid-ramp at its canvas edge, so the repeated stop makes the colour reach the background before the edge and
+ * the glow dissolves into the page instead of leaving a ring. Light mode is Grainient's own `lightMode`, which
+ * turns those background stops into pure white, so the light page background is exactly #ffffff.
+ */
+export function CornerGlowView({
+  settings,
+  scheme,
+  replay = 0,
+}: {
+  settings: GlowSettings;
+  scheme: "light" | "dark";
+  /** Bump to remount, e.g. to replay the intro. */
+  replay?: number;
+}) {
   const frame = useRef<HTMLDivElement>(null);
   const [generation, setGeneration] = useState(0);
 
@@ -58,39 +76,26 @@ export function CornerGlow() {
     };
   }, [scheme]);
 
-  if (!scheme) return null;
-
+  const { reach: reachVmin, maxReach, attach, ...grain } = settings;
+  const reach = `min(${reachVmin}vmin, ${maxReach}px)`;
   return (
+    // A box as big as the glow's reach, in the top-right corner. It clips, so in "page" mode the off-screen
+    // part can't widen the page. Pointer events stay off so it never blocks the page; Grainient tracks the
+    // pointer on the window, so hover still reaches it.
     <div
       ref={frame}
       aria-hidden
-      // A square centred on the top-right corner: only its inner quarter is on screen. The mask fades the
-      // grain out with the colour, so no edge of the canvas is ever visible. Pointer events stay off so it
-      // never blocks the page; Grainient tracks the pointer on the window, so hover still reaches it.
-      className="pointer-events-none fixed top-0 right-0 z-0 aspect-square w-[min(72vmin,760px)] translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(closest-side,#000_30%,rgb(0_0_0/0.55)_60%,transparent_92%)]"
+      className={`pointer-events-none ${attach === "fixed" ? "fixed" : "absolute"} top-0 right-0 z-0 overflow-hidden`}
+      style={{ width: reach, height: reach }}
     >
-      <Grainient
-        key={`${scheme}-${generation}`}
-        colors={PALETTE}
-        lightMode={scheme === "light"}
-        type="radial"
-        bands={1}
-        softness={1}
-        flow={1}
-        scale={1}
-        speed={0.6}
-        silk={0.2}
-        grainAmount={0.05}
-        grainSize={1.2}
-        grainAnimated={false}
-        contrast={1}
-        saturation={1}
-        interactive
-        stir={1}
-        clickSwirl={false}
-        intro
-        dpr={1}
-      />
+      {/* A square centred on the corner: only its inner quarter is inside the box. The mask fades the grain out
+          with the colour, so no edge of the canvas is ever visible. */}
+      <div
+        className="absolute top-0 right-0 aspect-square translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(closest-side,#000_30%,rgb(0_0_0/0.55)_60%,transparent_92%)]"
+        style={{ width: `calc(2 * ${reach})` }}
+      >
+        <Grainient key={`${scheme}-${generation}-${replay}`} {...grain} lightMode={scheme === "light"} dpr={1} />
+      </div>
     </div>
   );
 }

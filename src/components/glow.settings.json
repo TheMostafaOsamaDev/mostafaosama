@@ -1,0 +1,31 @@
+{
+  "colors": [
+    "#0b0c0f",
+    "#0b0c0f",
+    "#0e161d",
+    "#16303f",
+    "#2a5568",
+    "#7fa7b4"
+  ],
+  "type": "radial",
+  "angle": 55,
+  "bands": 1,
+  "softness": 1,
+  "flow": 1,
+  "scale": 1,
+  "speed": 0.6,
+  "silk": 0.2,
+  "grainAmount": 0.05,
+  "grainSize": 1.2,
+  "contrast": 1,
+  "saturation": 1,
+  "variation": 0,
+  "stir": 1,
+  "grainAnimated": false,
+  "interactive": true,
+  "clickSwirl": false,
+  "intro": true,
+  "reach": 36.0,
+  "maxReach": 380.0,
+  "attach": "fixed"
+}

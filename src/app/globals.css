@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
-/* The page background must match CornerGlow: its first palette colour in dark mode, and pure white in light
-   mode (Grainient's lightMode turns the background stops into white). */
+/* The page background must match CornerGlow: its first palette colour in dark mode (set on <html> by the root
+   layout as --glow-base, from glow.settings.json), and pure white in light mode (Grainient's lightMode turns
+   the background stops into white). */
 :root {
   --paper: #ffffff;
   --ink: #15171a;
@@ -11,7 +12,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #0b0c0f;
+    --paper: var(--glow-base, #0b0c0f);
     --ink: #e9ebee;
     --muted: #9aa1a8;
     color-scheme: dark;
