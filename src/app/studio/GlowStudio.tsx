@@ -2,7 +2,15 @@
 
 import { useId, useState, useSyncExternalStore, type ReactNode } from "react";
 import { CornerGlowView } from "@/components/CornerGlow";
-import { MAX_COLORS, PLACEMENT, SLIDERS, TOGGLES, type GlowSettings, type SliderSpec } from "@/components/glow";
+import {
+  DEFAULT_BACKGROUND,
+  MAX_COLORS,
+  PLACEMENT,
+  SLIDERS,
+  TOGGLES,
+  type GlowSettings,
+  type SliderSpec,
+} from "@/components/glow";
 
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 const subscribe = (onChange: () => void) => {
@@ -55,7 +63,7 @@ export function GlowStudio({ saved }: { saved: GlowSettings }) {
 
   const light = lightOverride ?? system === "light";
   const scheme = light ? "light" : "dark";
-  const paper = light ? "#ffffff" : settings.colors[0];
+  const paper = light ? "#ffffff" : settings.background;
   const ink = light ? "#15171a" : "#e9ebee";
   const muted = light ? "#5f666d" : "#9aa1a8";
   const dirty = toJSON(settings) !== toJSON(saved);
@@ -130,7 +138,7 @@ export function GlowStudio({ saved }: { saved: GlowSettings }) {
 
       <aside
         aria-label="Glow controls"
-        className="fixed inset-y-3 left-3 z-20 flex w-80 flex-col overflow-hidden rounded-lg border text-sm shadow-lg"
+        className="fixed inset-y-3 left-3 z-[60] flex w-80 flex-col overflow-hidden rounded-lg border text-sm shadow-lg"
         style={{
           background: light ? "rgb(255 255 255 / 0.92)" : "rgb(18 20 24 / 0.92)",
           borderColor: light ? "#e2e4e7" : "#262a30",
@@ -160,7 +168,7 @@ export function GlowStudio({ saved }: { saved: GlowSettings }) {
                   <button
                     type="button"
                     aria-label={`Remove color ${i + 1}`}
-                    disabled={settings.colors.length <= 2}
+                    disabled={settings.colors.length <= 1}
                     onClick={() =>
                       set(
                         "colors",
@@ -185,8 +193,33 @@ export function GlowStudio({ saved }: { saved: GlowSettings }) {
               Add color
             </button>
             <p className="mt-2 text-xs" style={{ color: muted }}>
-              Keep the first two colors the same: the first is the dark page background, and repeating it is what stops
-              the glow ending in a ring.
+              The glow&apos;s colours, from its outer edge to the corner. The background is added in front
+              automatically, so the glow always fades into the page without a ring.
+            </p>
+          </Section>
+
+          <Section title="Background" muted={muted}>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                aria-label="Background"
+                value={settings.background}
+                onChange={(e) => set("background", e.target.value)}
+                className="h-7 w-9 shrink-0 cursor-pointer rounded border bg-transparent p-0.5"
+                style={{ borderColor: "inherit" }}
+              />
+              <HexInput value={settings.background} onChange={(v) => set("background", v)} label="Background hex" />
+              <button
+                type="button"
+                onClick={() => set("background", DEFAULT_BACKGROUND)}
+                className="ml-auto text-xs underline underline-offset-2"
+                style={{ color: muted }}
+              >
+                React Bits default
+              </button>
+            </div>
+            <p className="mt-2 text-xs" style={{ color: muted }}>
+              The dark mode page colour. Light mode is always white.
             </p>
           </Section>
 
@@ -219,6 +252,9 @@ export function GlowStudio({ saved }: { saved: GlowSettings }) {
                 <Slider key={s.key} spec={s} value={settings[s.key]} onChange={(v) => set(s.key, v)} muted={muted} />
               ))}
             </div>
+            <p className="mt-2 text-xs" style={{ color: muted }}>
+              Grain Amount, Grain Size and Animated Grain apply to the whole page, not just the glow.
+            </p>
           </Section>
 
           <Section title="Behaviour" muted={muted}>

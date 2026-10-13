@@ -12,13 +12,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: glowSettings.colors[0] },
+    { media: "(prefers-color-scheme: dark)", color: glowSettings.background },
   ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" style={{ "--glow-base": glowSettings.colors[0] } as CSSProperties}>
+    <html lang="en" style={{ "--glow-base": glowSettings.background } as CSSProperties}>
       <body className="min-h-dvh">
         <CornerGlow />
         <div className="relative z-10">{children}</div>

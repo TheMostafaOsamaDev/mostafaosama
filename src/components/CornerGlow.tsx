@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { glowSettings, type GlowSettings } from "./glow";
+import { glowPalette, glowSettings, type GlowSettings } from "./glow";
 
 // React Bits' Grainient, installed unmodified from the registry. WebGL only exists in the browser and the
 // glow is decoration, so it loads after the page and never on the server.
@@ -78,23 +78,52 @@ export function CornerGlowView({
 
   const { reach: reachVmin, maxReach, attach, ...grain } = settings;
   const reach = `min(${reachVmin}vmin, ${maxReach}px)`;
+  const light = scheme === "light";
   return (
-    // A box as big as the glow's reach, in the top-right corner. It clips, so in "page" mode the off-screen
-    // part can't widen the page. Pointer events stay off so it never blocks the page; Grainient tracks the
-    // pointer on the window, so hover still reaches it.
-    <div
-      ref={frame}
-      aria-hidden
-      className={`pointer-events-none ${attach === "fixed" ? "fixed" : "absolute"} top-0 right-0 z-0 overflow-hidden`}
-      style={{ width: reach, height: reach }}
-    >
-      {/* A square centred on the corner: only its inner quarter is inside the box. The mask fades the grain out
-          with the colour, so no edge of the canvas is ever visible. */}
+    // One wrapper so the context-loss listener above covers both canvases; `contents` keeps it out of layout.
+    <div ref={frame} aria-hidden className="contents">
+      {/* The grain layer: Grainient's own noise over the whole viewport, on a flat page colour (the first palette
+          colour, or white in light mode). With no motion, intro or interaction it draws once and then idles. */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <Grainient
+          key={`grain-${scheme}-${generation}`}
+          colors={[grain.background, grain.background]}
+          type="linear"
+          speed={0}
+          flow={0}
+          silk={0}
+          grainAmount={grain.grainAmount}
+          grainSize={grain.grainSize}
+          grainAnimated={grain.grainAnimated}
+          interactive={false}
+          clickSwirl={false}
+          intro={false}
+          lightMode={light}
+          dpr={1}
+        />
+      </div>
+
+      {/* The glow: a box as big as its reach, in the top-right corner, above the grain layer. It clips, so in
+          "page" mode the off-screen part can't widen the page. Pointer events stay off so it never blocks the
+          page; Grainient tracks the pointer on the window, so hover still reaches it. */}
       <div
-        className="absolute top-0 right-0 aspect-square translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(closest-side,#000_30%,rgb(0_0_0/0.55)_60%,transparent_92%)]"
-        style={{ width: `calc(2 * ${reach})` }}
+        className={`pointer-events-none ${attach === "fixed" ? "fixed" : "absolute"} top-0 right-0 z-0 overflow-hidden`}
+        style={{ width: reach, height: reach }}
       >
-        <Grainient key={`${scheme}-${generation}-${replay}`} {...grain} lightMode={scheme === "light"} dpr={1} />
+        {/* A square centred on the corner: only its inner quarter is inside the box. The mask fades it into the
+            grain layer underneath, so no edge of the canvas is ever visible. */}
+        <div
+          className="absolute top-0 right-0 aspect-square translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(closest-side,#000_30%,rgb(0_0_0/0.55)_60%,transparent_92%)]"
+          style={{ width: `calc(2 * ${reach})` }}
+        >
+          <Grainient
+            key={`${scheme}-${generation}-${replay}`}
+            {...grain}
+            colors={glowPalette(grain)}
+            lightMode={light}
+            dpr={1}
+          />
+        </div>
       </div>
     </div>
   );

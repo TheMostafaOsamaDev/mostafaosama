@@ -35,19 +35,23 @@ distracting, hover working, light mode handled.
   twice that size centred on the corner, faded by a radial mask. `attach: "fixed"` keeps it in the corner while
   scrolling; `"page"` lets it scroll away (the box clips, so it never widens the page). Keep it a corner accent,
   not a full-page background.
-- One palette for both themes, starting with the dark page background **twice** (a radial Grainient is still
-  mid-ramp at its canvas edge; without the extra stop the glow ends in a ring). Light mode is Grainient's own
-  `lightMode`, which turns those stops into pure white, so the light `--paper` must stay `#ffffff` and the dark
-  one must equal the first palette colour. Keep `saturation={1}`.
-- Motion: `speed={0.6}`, `flow={1}`. The idle drift is deliberately barely visible; the life is in the hover
-  (`interactive`, `stir={1}`). `clickSwirl` and `grainAnimated` stay off. `dpr={1}`.
+- **`background`** (default React Bits' near-black `#120f17`) is the dark-mode page colour; light mode is always
+  white. `colors` are only the glow's own colours. `glowPalette()` puts the background in front **twice** (a radial
+  Grainient is still mid-ramp at its canvas edge; without the repeated stop the glow ends in a ring) and
+  pre-compensates it for `contrast`/`saturation`, which Grainient's shader also applies to those stops. Without that,
+  contrast 1.39 left a faint dark ring. Light mode is Grainient's own `lightMode` (background stops become white).
+- **Grain over the whole site** comes from Grainient itself: a second, full-viewport instance behind the glow with a
+  flat background palette, no motion, intro or interaction. It draws once and idles (measured: 0 draws while idle;
+  the library still redraws it once per pointer move because it listens on `window`). Its grain is luma-weighted
+  like React Bits': strongest in the glow's mid-tones, subtle on the flat page.
+- Motion, hover, grain and reach values are whatever the owner saved in the studio; don't override them in code.
 - Context loss (GPU reset, sleep and wake): Grainient does not restore its context, so CornerGlow remounts it on a
   fresh canvas (at most 3 times, 1s apart).
 - Decoration only: `aria-hidden`, `pointer-events-none` (Grainient tracks the pointer on `window`, so hover still
   works), loaded with `next/dynamic` (`ssr: false`), content above it (`relative z-10`). Reduced motion freezes it
   and turns off the intro and the hover.
 - Verify by measuring, not by eye (1440×900, corner crop):
-  - falloff along the diagonal reaches the exact page background by ~320px with no step (dark 11,12,15; light 255,255,255);
+  - falloff along the diagonal descends monotonically to the exact page background with no dip or step (dark = `background`; light 255,255,255);
   - a brisk mouse sweep over the glow changes it visibly (max ≥ 15 levels), a sweep elsewhere doesn't, and reduced motion gives 0;
   - forcing `WEBGL_lose_context` makes it disappear cleanly and come back by itself within ~4s.
 
