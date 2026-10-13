@@ -1,8 +1,5 @@
 'use client';
 
-// Grainient by React Bits (https://reactbits.dev/backgrounds/grainient), from the
-// @react-bits/Grainient-TS-TW registry entry. Vendored unchanged except where marked "local:".
-
 import { useEffect, useRef, type CSSProperties, type HTMLAttributes } from 'react';
 
 export type GrainientType = 'linear' | 'radial';
@@ -365,6 +362,7 @@ const Grainient = ({
     dpr
   };
   const settingsRef = useRef(settings);
+  settingsRef.current = settings;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -671,9 +669,7 @@ const Grainient = ({
     };
   }, []);
 
-  // local: sync settings in an effect instead of during render (react-hooks/refs), then redraw.
   useEffect(() => {
-    settingsRef.current = settings;
     wakeRef.current?.();
   });
 

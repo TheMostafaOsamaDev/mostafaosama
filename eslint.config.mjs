@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Third-party: installed unmodified from the React Bits registry (npx shadcn add @react-bits/Grainient-TS-TW).
+    "src/components/Grainient.tsx",
   ]),
 ]);
 

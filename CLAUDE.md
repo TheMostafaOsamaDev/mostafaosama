@@ -18,27 +18,39 @@ built step by step; the only settled piece so far is the background below.
 
 ## Background: CornerGlow (settled, keep these constraints)
 
-`src/components/CornerGlow.tsx` renders React Bits' Grainient (`src/components/Grainient.tsx`, vendored,
-local edits marked `local:`) as a soft glow in the top-right corner. The owner's brief: in the corner, a
-small area of the screen, good colours, never distracting.
+`src/components/CornerGlow.tsx` renders React Bits' Grainient as a soft glow in the top-right corner. The
+owner's brief: use the library's effect, in the corner, a small area of the screen, good colours, never
+distracting, hover working, light mode handled.
 
-- Radial type, centred on the corner: a square of `min(72vmin, 760px)` translated half off-screen, so only
-  its inner quarter shows. Do not grow it into a full-page background.
-- Each palette **starts with the page background colour, twice**. A radial Grainient is still mid-ramp at
-  its canvas edge; without the extra stop the glow ends in a visible ring. If `--paper` changes, change the
-  first two palette stops to match, and keep `saturation={1}` (lower values shift the base colour too).
-- Calm settings: `speed` ≤ 0.4, `interactive={false}`, `clickSwirl={false}`, `grainAnimated={false}`
-  (flickering grain is the most distracting part), `dpr={1}`.
-- Decoration only: `aria-hidden`, `pointer-events-none`, loaded client-side with `next/dynamic` (`ssr: false`),
-  content sits above it (`relative z-10`). Grainient already freezes and skips its intro under reduced motion.
-- Verify by sampling pixels, not by eye: along the diagonal from the corner the colour must fall smoothly
-  to exactly the page background (light 245,245,242; dark 11,12,15) by about 320px at 1440×900, with no step.
+- **Grainient is library code, unmodified.** Installed with `npx shadcn@latest add @react-bits/Grainient-TS-TW`
+  (registry configured in `components.json`) into `src/components/Grainient.tsx`. Never edit it; re-run the
+  command to update it. It is excluded from ESLint and Prettier for that reason (it writes a ref during render).
+- **`reactStrictMode: false`** in `next.config.ts`: Grainient destroys its WebGL context in cleanup, and dev-only
+  Strict Mode re-runs effects on the same canvas, so the glow never draws in `next dev`. Production is unaffected.
+  For the same reason keep CornerGlow in the **root layout**: a page segment can be hidden and re-shown by React
+  `<Activity>` (Cache Components), which would re-run the effect on a dead context.
+- Radial type, centred on the corner: a square of `min(72vmin, 760px)` translated half off-screen, so only its
+  inner quarter shows, faded by a radial mask. Do not grow it into a full-page background.
+- One palette for both themes, starting with the dark page background **twice** (a radial Grainient is still
+  mid-ramp at its canvas edge; without the extra stop the glow ends in a ring). Light mode is Grainient's own
+  `lightMode`, which turns those stops into pure white, so the light `--paper` must stay `#ffffff` and the dark
+  one must equal the first palette colour. Keep `saturation={1}`.
+- Motion: `speed={0.6}`, `flow={1}`. The idle drift is deliberately barely visible; the life is in the hover
+  (`interactive`, `stir={1}`). `clickSwirl` and `grainAnimated` stay off. `dpr={1}`.
+- Context loss (GPU reset, sleep and wake): Grainient does not restore its context, so CornerGlow remounts it on a
+  fresh canvas (at most 3 times, 1s apart).
+- Decoration only: `aria-hidden`, `pointer-events-none` (Grainient tracks the pointer on `window`, so hover still
+  works), loaded with `next/dynamic` (`ssr: false`), content above it (`relative z-10`). Reduced motion freezes it
+  and turns off the intro and the hover.
+- Verify by measuring, not by eye (1440×900, corner crop):
+  - falloff along the diagonal reaches the exact page background by ~320px with no step (dark 11,12,15; light 255,255,255);
+  - a brisk mouse sweep over the glow changes it visibly (max ≥ 15 levels), a sweep elsewhere doesn't, and reduced motion gives 0;
+  - forcing `WEBGL_lose_context` makes it disappear cleanly and come back by itself within ~4s.
 
 ## Quality bar
 
 - Respects `prefers-reduced-motion`, fully keyboard accessible, no horizontal scroll at 360px.
-- Lighthouse (mobile, production build) Performance ≥ 90. Current home: 95 / 100 / 100 / 100. Most of the
-  remaining cost is Grainient compiling its shaders on load.
+- Lighthouse (mobile, production build) Performance ≥ 90. Current home: 100 / 100 / 100 / 100.
 - Screenshots with Playwright at 1440×900 and 390×844, light and dark, for every visual change.
 - `npm run lint`, `npx tsc --noEmit`, `npm run build` pass with no warnings. `npm run format` (Prettier, 120 columns).
 - When restarting the production server for checks, free the port with `kill $(lsof -tiTCP:3200 -sTCP:LISTEN)`;

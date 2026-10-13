@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
-/* The page background must equal the first colour of CornerGlow's palette for that theme. */
+/* The page background must match CornerGlow: its first palette colour in dark mode, and pure white in light
+   mode (Grainient's lightMode turns the background stops into white). */
 :root {
-  --paper: #f5f5f2;
+  --paper: #ffffff;
   --ink: #15171a;
   --muted: #5f666d;
   color-scheme: light;
