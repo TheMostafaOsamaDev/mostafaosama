@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { glowPalette, glowSettings, type GlowSettings } from "./glow";
 
@@ -28,30 +27,16 @@ export function CornerGlow() {
     () => (window.matchMedia(DARK_QUERY).matches ? "dark" : "light"),
     () => null,
   );
-  // The dev-only /studio page draws its own glow from the settings being edited.
-  const studio = usePathname().startsWith("/studio");
-  if (!scheme || studio) return null;
+  if (!scheme) return null;
   return <CornerGlowView settings={glowSettings} scheme={scheme} />;
 }
 
 /**
- * The glow itself, shared by the site and the /studio page.
- *
- * The palette starts with the dark page background (twice, in the saved settings): a radial Grainient is still
- * mid-ramp at its canvas edge, so the repeated stop makes the colour reach the background before the edge and
- * the glow dissolves into the page instead of leaving a ring. Light mode is Grainient's own `lightMode`, which
- * turns those background stops into pure white, so the light page background is exactly #ffffff.
+ * The grain layer and the corner glow. The glow's palette comes from `glowPalette`, which puts the background in
+ * front so the glow dissolves into the page (see glow.ts). Light mode is Grainient's own `lightMode`, which turns
+ * those background stops into pure white, so the light page background is exactly #ffffff.
  */
-export function CornerGlowView({
-  settings,
-  scheme,
-  replay = 0,
-}: {
-  settings: GlowSettings;
-  scheme: "light" | "dark";
-  /** Bump to remount, e.g. to replay the intro. */
-  replay?: number;
-}) {
+function CornerGlowView({ settings, scheme }: { settings: GlowSettings; scheme: "light" | "dark" }) {
   const frame = useRef<HTMLDivElement>(null);
   const [generation, setGeneration] = useState(0);
 
@@ -116,13 +101,7 @@ export function CornerGlowView({
           className="absolute top-0 right-0 aspect-square translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(closest-side,#000_30%,rgb(0_0_0/0.55)_60%,transparent_92%)]"
           style={{ width: `calc(2 * ${reach})` }}
         >
-          <Grainient
-            key={`${scheme}-${generation}-${replay}`}
-            {...grain}
-            colors={glowPalette(grain)}
-            lightMode={light}
-            dpr={1}
-          />
+          <Grainient key={`${scheme}-${generation}`} {...grain} colors={glowPalette(grain)} lightMode={light} dpr={1} />
         </div>
       </div>
     </div>

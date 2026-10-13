@@ -29,8 +29,9 @@ distracting, hover working, light mode handled.
   Strict Mode re-runs effects on the same canvas, so the glow never draws in `next dev`. Production is unaffected.
   For the same reason keep CornerGlow in the **root layout**: a page segment can be hidden and re-shown by React
   `<Activity>` (Cache Components), which would re-run the effect on a dead context.
-- **All glow settings live in `src/components/glow.settings.json`** (validated by `parseSettings` in `glow.ts`).
-  Tune them in the dev-only studio (below) rather than by hand.
+- **All glow settings live in `src/components/glow.settings.json`**, typed by `GlowSettings` in `glow.ts`. The owner
+  tuned and approved these values (2026-10-13) in a temporary studio that has since been removed; change them only
+  when asked.
 - Placement: a box `reach` (vmin, capped at `maxReach` px) square in the top-right corner, clipping a radial square
   twice that size centred on the corner, faded by a radial mask. `attach: "fixed"` keeps it in the corner while
   scrolling; `"page"` lets it scroll away (the box clips, so it never widens the page). Keep it a corner accent,
@@ -44,7 +45,7 @@ distracting, hover working, light mode handled.
   flat background palette, no motion, intro or interaction. It draws once and idles (measured: 0 draws while idle;
   the library still redraws it once per pointer move because it listens on `window`). Its grain is luma-weighted
   like React Bits': strongest in the glow's mid-tones, subtle on the flat page.
-- Motion, hover, grain and reach values are whatever the owner saved in the studio; don't override them in code.
+- Motion, hover, grain and reach values are the owner's approved settings; don't override them in code.
 - Context loss (GPU reset, sleep and wake): Grainient does not restore its context, so CornerGlow remounts it on a
   fresh canvas (at most 3 times, 1s apart).
 - Decoration only: `aria-hidden`, `pointer-events-none` (Grainient tracks the pointer on `window`, so hover still
@@ -54,17 +55,6 @@ distracting, hover working, light mode handled.
   - falloff along the diagonal descends monotonically to the exact page background with no dip or step (dark = `background`; light 255,255,255);
   - a brisk mouse sweep over the glow changes it visibly (max ≥ 15 levels), a sweep elsewhere doesn't, and reduced motion gives 0;
   - forcing `WEBGL_lose_context` makes it disappear cleanly and come back by itself within ~4s.
-
-## Glow studio (development only)
-
-`npm run dev`, then open `/studio`. It renders the same `CornerGlowView` the site uses over a full, scrolling sample
-page, with React Bits' Background Studio controls for Grainient (same ranges), plus Reach / Max reach (with a live
-"reaches N px, X% of the width" readout), scroll behaviour, a Light Mode preview and Replay intro. **Save to site**
-POSTs to `/studio/save`, which validates and writes `glow.settings.json` (localhost only).
-
-- The page and route are `page.dev.tsx` / `route.dev.ts`. `next.config.ts` only recognises `.dev.*` page extensions
-  in the dev-server phase, so production builds don't contain `/studio` at all (verified: 404, no chunk mentions it).
-- The site's own CornerGlow hides itself on `/studio`, so only the glow being edited is visible.
 
 ## Quality bar
 
