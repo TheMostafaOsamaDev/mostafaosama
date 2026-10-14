@@ -7,13 +7,16 @@ Audience: engineering managers and tech leads hiring full-stack engineers. Recru
 
 **Status: restarted from zero on 2026-10-13.** The previous "Trace" design was rejected and is kept only
 as the local git tag `trace-v1`. Do not bring its patterns back unless asked. The new design is being
-built step by step; the only settled piece so far is the background below.
+built step by step. Settled so far (2026-10-14): the background, the nav, the inline hero, Arabic, the font and the
+buttons. The dev-only studios used to choose them were removed (they're in git history: commit 92242df); their
+choices live in the `*.settings.json` files. The About / Work / Contact sections are still placeholders.
 
 ## Stack
 
 - Next.js 16 (App Router, Turbopack, `cacheComponents`), React 19, TypeScript, Tailwind CSS v4.
 - Colours live as CSS variables in `src/app/globals.css` (`--paper`, `--ink`, `--muted`), exposed to Tailwind.
-- Static by default. Vercel builds with Node 22 (`engines`) and `next build` (`vercel.json`); the dashboard
+- pnpm (`pnpm-lock.yaml`; `pnpm-workspace.yaml` skips unrs-resolver's build script). Static by default. Vercel builds
+  with Node 22 (`engines`) and `next build` (`vercel.json`); the dashboard
   still has 2023 settings that these override.
 
 ## Background: CornerGlow (settled, keep these constraints)
@@ -73,29 +76,21 @@ The site is one scrolling page: `SiteNav` runs `FloatingNav` with `sections`, so
 `<section id data-section>` elements, and a scrollspy marks the section crossing 35% of the screen. With scroll
 `"reveal"` and `revealAfter="hero"` the nav is hidden while the first section is current and shows past it.
 
-## Home (being chosen)
+## Home
 
-`src/components/home/`: `HomePage` renders one of six hero ideas (`heroes.tsx`) from `home.settings.json`, then the
-About / Work / Contact sections (placeholders for now). Hero entrances are CSS (`home.css`), so they start with the
-first paint and cost no JavaScript; signatures are CSS or tiny client islands (`Interactive.tsx`). The portrait is
-`src/assets/mostafa-osama.jpg` (static import: next/image sizes, AVIF/WebP, blur placeholder). The owner picks in the
-dev-only `/studio/home` (Save writes `home.settings.json`); then drop the unused ideas and the studio. Measured:
-Lighthouse mobile 100 / 100 / 100 / 100, LCP is the portrait, CLS 0.
+`src/components/home/`: `HomePage` renders the hero (`heroes.tsx`, the "inline" idea: the statement first, with the
+portrait set inside the sentence as a pill that widens on hover), then the About / Work / Contact sections
+(placeholders for now). Its look (tone, entrances, pace, badge, buttons) is in `home.settings.json`. Entrances are CSS
+(`home.css`), so they start with the first paint and cost no JavaScript. The portrait is `src/assets/mostafa-osama.jpg`
+(static import: next/image sizes, AVIF/WebP, blur placeholder).
 
-## Nav studio (temporary, development only)
+## Navigation settings
 
-`/studio/nav` is where the owner is choosing the floating navigation: separate desktop and mobile setups (with a
-breakpoint and a live phone preview), sections (pages, links, and tools: search palette, theme switch, copy
-email, back to top, settings and menu panels), icon library, layout (including side rails), GSAP nav motion and
-the page transition (React `<ViewTransition>` on real routes). Its routes use `.dev.tsx`/`.dev.ts`, which
-`next.config.ts` recognises only under `next dev`, so production never builds them. Save writes
-`src/components/nav.settings.json` (validated by `parseNavSettings` in `src/components/nav.ts`). When the owner
-approves, build the real nav from those settings, uninstall the icon libraries that lost (all are devDependencies
-for now), and remove the studio. While `next dev` has the studio's route types in `.next/dev/types`, a local
-`next build` fails type-checking on them; build from a clean checkout (as Vercel does) or with the dev server stopped
-and `.next/dev` removed.
+The nav's setup (desktop and mobile, breakpoint, items, Hugeicons, layout, motion, page transition) is in
+`src/components/nav.settings.json`, read through `navConfig` in `src/components/nav.ts`; `FloatingNav` supports more
+options than the saved ones. If the icon library ever changes, swap the imports in `site-nav/icons.tsx`.
 
-The nav fits itself to every screen (`src/app/studio/nav/fit.ts`): it keeps the saved setup when it fits, else
+The nav fits itself to every screen (`src/components/site-nav/fit.ts`): it keeps the saved setup when it fits, else
 drops inline names, else shrinks items (down to 36px), else moves links and then pages (from the end) into a
 "More" menu. The site nav's glass blurs 20px (owner's request, 2026-10-14). Its `view-transition-name` is set only
 under `:root:active-view-transition` (nav.css): a named element is a backdrop root, so a permanent name made the glass
@@ -105,13 +100,12 @@ the screen and scroll inside; side rails publish `--nav-inset-left/right` so con
 
 Theme and motion preferences live in `src/components/preferences.ts`: `data-theme` / `data-motion` on `<html>`,
 remembered in localStorage. `globals.css` and CornerGlow follow `data-theme` (CornerGlow reads it through
-`usePreferences`). The studio restores them after hydration; the real site will need a tiny inline script in the
-root layout to restore them before first paint.
+`usePreferences`). An inline script in `RootDocument` restores them before first paint.
 
 ## Languages, fonts, buttons
 
 - **English at `/` (`app/(en)`), Arabic at `/ar` (`app/ar`, `dir="rtl"`).** Each language has its own root layout
-  sharing `SiteShell`; the studios have theirs (`app/studio/layout.dev.tsx`); unknown URLs get
+  sharing `SiteShell`; unknown URLs get
   `app/global-not-found.tsx` (`experimental.globalNotFound`). `/en` redirects to `/`. All strings live in
   `src/i18n/dictionaries.ts`; the nav reads them through `I18nProvider`. Use logical CSS (start/end, `ps`/`pe`,
   `text-end`) so layouts mirror; `:lang(ar)` resets letter-spacing (it breaks Arabic joining).
@@ -157,11 +151,7 @@ root layout to restore them before first paint.
   dark 10.2–10.7:1 on the page and 9.3–9.7:1 with its `--on-primary`, except cobalt (owner's choice, 2026-10-14): dark #2981fb, the light shade's hue at full strength, 5.1:1 on the page and 4.9:1 with #041531 (white text on it would be 3.7:1). Errors
   (`--danger` / `--on-danger`; light #c4281c 5.7:1, dark #ff8a80 8.3:1 on the page) and success (`--success` / `--on-success`; light #137738 5.6:1 with white, dark #56d57b 10.1:1 on the page, 9.5:1 with #021c09). Re-check contrast if you change
   them.
-- **Button studio** (`/studio/buttons`, dev only): a theme switch (the page's own light / dark / system), magnetic
-  tuning, colour (palette swatches previewed live on the page, ink or primary, fill), look, download and send styles;
-  a playground (with a simulated slow connection or failure, since the local CV downloads instantly) and every state
-  frozen, in English and Arabic. (When measuring frame rates with Playwright, bring the page to the front: a
-  background tab runs at ~2 fps.)
+- (When measuring frame rates with Playwright, bring the page to the front: a background tab runs at ~2 fps.)
 - **Measured (mobile, production build, 2026-10-14):** `/` 93–94 / 100 / 100 / 100 with one font file preloaded;
   `/ar` 85 / 100 / 100 / 100, FCP 2.0 s (the Arabic font is found late) and LCP 4.1 s (plus the saved blur/focus
   entrance). Below the 90 bar: options are preloading Arabic (costs English ~4 points), a lighter entrance, or
@@ -172,7 +162,7 @@ root layout to restore them before first paint.
 - Respects `prefers-reduced-motion`, fully keyboard accessible, no horizontal scroll at 360px.
 - Lighthouse (mobile, production build) Performance ≥ 90. Current home: 100 / 100 / 100 / 100.
 - Screenshots with Playwright at 1440×900 and 390×844, light and dark, for every visual change.
-- `npm run lint`, `npx tsc --noEmit`, `npm run build` pass with no warnings. `npm run format` (Prettier, 120 columns).
+- `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build` pass with no warnings. `pnpm format` (Prettier, 120 columns).
 - When restarting the production server for checks, free the port with `kill $(lsof -tiTCP:3200 -sTCP:LISTEN)`;
   `pkill -f "next start"` misses the `next-server` child and leaves an old build serving.
 

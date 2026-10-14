@@ -239,8 +239,8 @@
 
 /* ── Theme switch ────────────────────────────────────────────────────────────────────────────────────────────
    setTheme() wraps the change in a document view transition and adds .theme-vt-fade or .theme-vt-circle. The nav
-   and the studio panel drop their own transition names meanwhile, so they change with the page. */
-.theme-vt :is(.site-nav, .studio-panel) {
+   drops its own transition name meanwhile, so it changes with the page. */
+.theme-vt .site-nav {
   view-transition-name: none !important;
 }
 .theme-vt-fade::view-transition-old(root) {
@@ -273,18 +273,15 @@
 :root:active-view-transition .site-nav {
   view-transition-name: site-nav;
 }
-/* The nav (and the studio's panel) stay live while pages change: no snapshot cross-fade. */
-::view-transition-group(site-nav),
-::view-transition-group(studio-panel) {
+/* The nav stays live while pages change: no snapshot cross-fade. */
+::view-transition-group(site-nav) {
   animation: none;
   z-index: 10;
 }
-::view-transition-old(site-nav),
-::view-transition-old(studio-panel) {
+::view-transition-old(site-nav) {
   display: none;
 }
 ::view-transition-new(site-nav),
-::view-transition-new(studio-panel),
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

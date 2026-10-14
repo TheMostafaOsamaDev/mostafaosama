@@ -4,7 +4,7 @@ import { RootDocument } from "@/components/RootDocument";
 import { fontVariables as latin } from "@/fonts/site-latin";
 import "./globals.css";
 
-// Unknown URLs. The site has several root layouts (English, Arabic, the dev studios), so there's no single layout to render
+// Unknown URLs. The site has several root layouts (English, Arabic), so there's no single layout to render
 // a 404 inside; Next serves this page directly instead.
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
 

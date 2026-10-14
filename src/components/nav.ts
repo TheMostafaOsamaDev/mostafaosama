@@ -31,17 +31,6 @@ export type NavItemId = (typeof NAV_ITEMS)[number]["id"];
 export type NavItem = Omit<(typeof NAV_ITEMS)[number], "label"> & { label: string };
 export const EMAIL = "mostafa.osama.dev@gmail.com";
 
-/** What each item does, shown in the studio's item list. */
-export const ITEM_NOTES: Partial<Record<NavItemId, string>> = {
-  search: "Command palette: pages, links and actions. ⌘K or / opens it.",
-  theme: "Switches light and dark, with its own transition.",
-  copy: "Copies the email address and confirms with a check.",
-  top: "Appears once you scroll down a screen.",
-  settings: "Panel with theme and motion preferences.",
-  menu: "Panel with every page and link, including the hidden ones.",
-  lang: "Switches between English and Arabic (right-to-left).",
-};
-
 /** The choices for every per-device option, in display order. */
 export const NAV_OPTIONS = {
   library: ["lucide", "phosphor", "tabler", "heroicons", "remix", "iconoir", "hugeicons"],
@@ -83,7 +72,6 @@ export const NAV_RANGES = {
 
 /** Settings shared by both devices. */
 export const SHARED_OPTIONS = { themeSwitch: ["instant", "fade", "circle"] } as const;
-export const BREAKPOINT_RANGE = [480, 1200, 16] as const;
 
 type Options = typeof NAV_OPTIONS;
 type Ranges = typeof NAV_RANGES;
@@ -163,122 +151,6 @@ export const NAV_DEFAULTS: NavConfig = {
   },
 };
 
-/** Starting points. A preset replaces the device being edited; everything stays adjustable afterwards. */
-export const NAV_PRESETS: Record<string, { note: string; best: Device; profile: Partial<NavProfile> }> = {
-  Quiet: { note: "Solid pill, sliding highlight, content rises in.", best: "desktop", profile: {} },
-  Reference: {
-    note: "Closest to the reference: icons only, raised, no highlight.",
-    best: "desktop",
-    profile: {
-      library: "tabler",
-      indicator: "none",
-      hover: "lift",
-      separators: false,
-      itemSize: 44,
-      gap: 4,
-      page: "fade",
-      pageDuration: 300,
-    },
-  },
-  "Text bar": {
-    note: "Top bar of page names over glass; icons for the rest.",
-    best: "desktop",
-    profile: {
-      position: "top",
-      surface: "glass",
-      shadow: "soft",
-      labels: "text",
-      indicator: "line",
-      indicatorMotion: "stretch",
-      hover: "bubble",
-      scroll: "shrink",
-      panel: "popover",
-      page: "fade",
-      pageDuration: 300,
-    },
-  },
-  "Side rail": {
-    note: "Vertical rail on the left, tooltips to the side.",
-    best: "desktop",
-    profile: {
-      position: "left",
-      shape: "rounded",
-      indicator: "pill",
-      indicatorMotion: "stretch",
-      hover: "lift",
-      panel: "popover",
-      items: ["home", "work", "experience", "lab", "about", "github", "linkedin", "search", "theme", "settings"],
-      page: "slide",
-    },
-  },
-  Dock: {
-    note: "Frosted glass; icons magnify under the pointer.",
-    best: "desktop",
-    profile: {
-      library: "phosphor",
-      activeIcon: "filled",
-      surface: "glass",
-      shadow: "floating",
-      shape: "rounded",
-      indicator: "dot",
-      indicatorMotion: "stretch",
-      hover: "magnify",
-      entrance: "drop",
-      ease: "back",
-      duration: 0.55,
-      scroll: "hide",
-      page: "blur",
-      pageDuration: 450,
-      pageMode: "overlap",
-    },
-  },
-  Ink: {
-    note: "Inverted pill; the current page names itself; pages reveal from the icon.",
-    best: "desktop",
-    profile: {
-      library: "hugeicons",
-      stroke: 1.5,
-      surface: "inverted",
-      shadow: "floating",
-      labels: "active",
-      indicatorMotion: "stretch",
-      hover: "none",
-      iconHover: "tilt",
-      entrance: "grow",
-      ease: "expo",
-      duration: 0.6,
-      panel: "popover",
-      page: "reveal",
-      pageDuration: 600,
-      pageEase: "emphasized",
-      pageMode: "overlap",
-    },
-  },
-  "Thumb bar": {
-    note: "Big targets, hides on scroll, menu as a bottom sheet.",
-    best: "mobile",
-    profile: NAV_DEFAULTS.mobile,
-  },
-  "Mobile dock": {
-    note: "Glass, filled current icon, pages slide sideways.",
-    best: "mobile",
-    profile: {
-      ...NAV_DEFAULTS.mobile,
-      library: "phosphor",
-      activeIcon: "filled",
-      surface: "glass",
-      shadow: "floating",
-      shape: "rounded",
-      indicator: "dot",
-      items: ["home", "work", "lab", "about", "theme", "menu"],
-      entrance: "drop",
-      ease: "back",
-    },
-  },
-};
-
-export const presetProfile = (name: string): NavProfile => ({ ...BASE_PROFILE, ...NAV_PRESETS[name].profile });
-
 const PAGE_EASES: Record<NavProfile["pageEase"], string> = {
   out: "cubic-bezier(0.22, 1, 0.36, 1)",
   "in-out": "cubic-bezier(0.65, 0, 0.35, 1)",
@@ -332,44 +204,6 @@ export function pageTransitionVars(s: NavProfile, reduced: boolean): Record<stri
     "--pt-scale-out": String(1 - s.pageDistance / 800),
     "--pt-bg": covers ? "var(--paper)" : "transparent",
   };
-}
-
-function parseProfile(input: unknown, device: Device): NavProfile | string {
-  if (!input || typeof input !== "object") return `Missing ${device} settings.`;
-  const raw = input as Record<string, unknown>;
-  const out: Record<string, unknown> = {};
-  for (const [key, choices] of Object.entries(NAV_OPTIONS)) {
-    if (!(choices as readonly unknown[]).includes(raw[key])) return `Invalid ${device} ${key}.`;
-    out[key] = raw[key];
-  }
-  for (const [key, [min, max]] of Object.entries(NAV_RANGES)) {
-    const v = raw[key];
-    if (typeof v !== "number" || !Number.isFinite(v) || v < min || v > max) return `Invalid ${device} ${key}.`;
-    out[key] = v;
-  }
-  for (const key of ["separators", "press"]) {
-    if (typeof raw[key] !== "boolean") return `Invalid ${device} ${key}.`;
-    out[key] = raw[key];
-  }
-  const ids = NAV_ITEMS.map((i) => i.id as string);
-  if (!Array.isArray(raw.items) || raw.items.some((i) => !ids.includes(i))) return `Invalid ${device} items.`;
-  out.items = [...new Set(raw.items)];
-  return out as NavProfile;
-}
-
-/** Validates the studio's save request. Returns the clean config or a reason. */
-export function parseNavConfig(input: unknown): NavConfig | string {
-  if (!input || typeof input !== "object") return "Expected an object.";
-  const raw = input as Record<string, unknown>;
-  const [min, max] = BREAKPOINT_RANGE;
-  const bp = raw.breakpoint;
-  if (typeof bp !== "number" || bp < min || bp > max) return "Invalid breakpoint.";
-  if (!(SHARED_OPTIONS.themeSwitch as readonly unknown[]).includes(raw.themeSwitch)) return "Invalid themeSwitch.";
-  const desktop = parseProfile(raw.desktop, "desktop");
-  if (typeof desktop === "string") return desktop;
-  const mobile = parseProfile(raw.mobile, "mobile");
-  if (typeof mobile === "string") return mobile;
-  return { breakpoint: bp, themeSwitch: raw.themeSwitch as NavConfig["themeSwitch"], desktop, mobile };
 }
 
 /** The config the site ships with; fills in anything the saved file predates. */

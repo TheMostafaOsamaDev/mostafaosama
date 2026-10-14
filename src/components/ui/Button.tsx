@@ -5,7 +5,7 @@ import "./buttons.css";
 export type ButtonKind = "primary" | "secondary" | "link" | "icon";
 
 /** The attributes buttons.css and ButtonEffects read: look, size, and how strongly it pulls toward the cursor. */
-export function buttonAttrs(kind: ButtonKind, s: ButtonSettings, state?: "hover" | "focus" | "active") {
+export function buttonAttrs(kind: ButtonKind, s: ButtonSettings) {
   const isLink = kind === "link";
   return {
     className: isLink ? "btn-link" : "btn",
@@ -20,7 +20,6 @@ export function buttonAttrs(kind: ButtonKind, s: ButtonSettings, state?: "hover"
     "data-fill": hasFill(kind, s) ? s.fill : undefined,
     "data-shadow": s.shadow ? "" : undefined,
     "data-press": s.press ? "" : undefined,
-    "data-state": state,
     // Magnetic: ButtonEffects reads these. Text links don't move; their text would wobble.
     "data-magnetic": isLink || !s.strength ? undefined : `${s.strength} ${s.follow}`,
     // Speeds: buttons.css reads them, and ButtonEffects reads the fill time.
@@ -54,8 +53,8 @@ export const arrowIcon = (
 /**
  * Every button on the site: magnetic (it leans toward the cursor, see ButtonEffects) in the saved look
  * (buttons.settings.json). CSS only, apart from that one shared script. With `href` it renders a link, otherwise a
- * <button>. `icon` sits before or after the label (the `icons` setting). `state` forces hover / focus / pressed for
- * the studio's showcase. The download button is DownloadButton, which adds progress states.
+ * <button>. `icon` sits before or after the label (the `icons` setting). Buttons that show their work (email,
+ * download, send) are in StatusButtons.
  */
 export function Button({
   kind = "primary",
@@ -65,7 +64,6 @@ export function Button({
   disabled,
   external,
   settings = buttonSettings,
-  state,
   type = "button",
   icon,
 }: {
@@ -77,13 +75,12 @@ export function Button({
   disabled?: boolean;
   external?: boolean;
   settings?: ButtonSettings;
-  state?: "hover" | "focus" | "active";
   type?: "button" | "submit";
   /** A small icon for the label (mail, download…), placed by the `icons` setting. */
   icon?: ReactNode;
 }) {
   const s = settings;
-  const attrs = { ...buttonAttrs(kind, s, state), "aria-label": label };
+  const attrs = { ...buttonAttrs(kind, s), "aria-label": label };
   const glyph = icon && kind !== "icon" && s.icons !== "none" && (
     <span aria-hidden className="btn-icon">
       {icon}

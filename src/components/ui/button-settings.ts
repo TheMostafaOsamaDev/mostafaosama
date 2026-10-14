@@ -2,8 +2,7 @@ import saved from "./buttons.settings.json";
 
 /**
  * The site's buttons: magnetic (they lean toward the cursor) in a chosen look, plus how the stateful buttons show
- * their work: download progress, and sending a message. Chosen in the button studio (/studio/buttons), saved to
- * buttons.settings.json.
+ * their work: download progress, and sending a message. The owner's choices are in buttons.settings.json.
  */
 export const BUTTON_OPTIONS = {
   look: ["solid", "soft", "outline"],
@@ -35,9 +34,6 @@ export const BUTTON_RANGES = {
   /** Seconds it takes to spring back when the cursor leaves. */
   releaseTime: [0.2, 2.5, 0.05],
 } as const;
-
-/** Each letting-go curve's natural length; the studio sets releaseTime to it when the curve changes. */
-export const SPRING_TIMES = { elastic: 1.5, soft: 0.8, snappy: 0.45, bouncy: 1.1 } as const;
 
 type Options = typeof BUTTON_OPTIONS;
 type Ranges = typeof BUTTON_RANGES;
@@ -72,26 +68,6 @@ export const BUTTON_DEFAULTS: ButtonSettings = {
   press: true,
   percent: true,
 };
-
-export function parseButtonSettings(input: unknown): ButtonSettings | string {
-  if (!input || typeof input !== "object") return "Expected an object.";
-  const raw = input as Record<string, unknown>;
-  const out: Record<string, unknown> = {};
-  for (const [key, choices] of Object.entries(BUTTON_OPTIONS)) {
-    if (!(choices as readonly unknown[]).includes(raw[key])) return `Invalid button ${key}.`;
-    out[key] = raw[key];
-  }
-  for (const [key, [min, max]] of Object.entries(BUTTON_RANGES)) {
-    const v = raw[key];
-    if (typeof v !== "number" || !Number.isFinite(v) || v < min || v > max) return `Invalid button ${key}.`;
-    out[key] = v;
-  }
-  for (const key of ["shadow", "press", "percent"]) {
-    if (typeof raw[key] !== "boolean") return `Invalid button ${key}.`;
-    out[key] = raw[key];
-  }
-  return out as ButtonSettings;
-}
 
 /** The saved settings; anything the file predates (or no longer has) falls back to the defaults. */
 const file = saved as Partial<Record<string, unknown>>;

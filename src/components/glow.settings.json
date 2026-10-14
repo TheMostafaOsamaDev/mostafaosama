@@ -1,13 +1,7 @@
 {
   "background": "#120f17",
-  "colors": [
-    "#2a5568",
-    "#7fa7b4"
-  ],
-  "lightColors": [
-    "#b4d8e4",
-    "#6eaec4"
-  ],
+  "colors": ["#2a5568", "#7fa7b4"],
+  "lightColors": ["#b4d8e4", "#6eaec4"],
   "type": "radial",
   "attach": "page",
   "angle": 55,

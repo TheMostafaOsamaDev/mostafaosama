@@ -233,7 +233,7 @@ function useSettle(status: Status, set: (s: Status) => void) {
 
 /**
  * The CV download: fetches the file with real progress (from Content-Length), then saves it under `filename`. Without
- * JavaScript it is a plain download link. `simulate` (ms) fakes a slow download for the studio; `fail` makes it fail.
+ * JavaScript it is a plain download link.
  */
 export function DownloadButton({
   href,
@@ -241,16 +241,12 @@ export function DownloadButton({
   labels,
   kind = "secondary",
   settings: s = buttonSettings,
-  simulate,
-  fail,
 }: {
   href: string;
   filename: string;
   labels: Labels;
   kind?: ButtonKind;
   settings?: ButtonSettings;
-  simulate?: number;
-  fail?: boolean;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   // What the button shows (the outline, ring, bar or fill, and the percentage): it chases the real progress
@@ -300,32 +296,23 @@ export function DownloadButton({
     const traced = follow(stop);
     const reach = (to: number) => (goal.current = { to, known: true });
     try {
-      if (simulate) {
-        await new Promise((r) => setTimeout(r, simulate * 0.15));
-        for (let p = 0; p <= 1.0001; p += 0.05) {
-          reach(Math.min(p, 1));
-          await new Promise((r) => setTimeout(r, simulate / 20));
-          if (fail && p > 0.55) throw new Error("simulated failure");
-        }
-      } else {
-        const res = await fetch(href);
-        if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
-        const total = Number(res.headers.get("content-length")) || 0;
-        const reader = res.body.getReader();
-        const chunks: BlobPart[] = [];
-        let got = 0;
-        for (;;) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          got += value.length;
-          if (total) reach(got / total);
-        }
-        const url = URL.createObjectURL(new Blob(chunks, { type: res.headers.get("content-type") ?? undefined }));
-        const a = Object.assign(document.createElement("a"), { href: url, download: filename });
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      const res = await fetch(href);
+      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
+      const total = Number(res.headers.get("content-length")) || 0;
+      const reader = res.body.getReader();
+      const chunks: BlobPart[] = [];
+      let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        got += value.length;
+        if (total) reach(got / total);
       }
+      const url = URL.createObjectURL(new Blob(chunks, { type: res.headers.get("content-type") ?? undefined }));
+      const a = Object.assign(document.createElement("a"), { href: url, download: filename });
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
       reach(1);
       await traced;
       setStatus("done");
@@ -352,71 +339,40 @@ export function DownloadButton({
   );
 }
 
-/**
- * The contact form's submit button. The form owns the request and passes `status`; with `simulate` (ms) it runs a
- * pretend send on click instead (the studio), and `fail` makes that fail.
- */
+/** The contact form's submit button. The form owns the request and passes `status`, and returns it to idle. */
 export function SendButton({
-  status: controlled,
+  status,
   labels,
   settings: s = buttonSettings,
-  simulate,
-  fail,
 }: {
-  status?: Status;
+  status: Status;
   labels: Labels;
   settings?: ButtonSettings;
-  simulate?: number;
-  fail?: boolean;
 }) {
-  const [own, setOwn] = useState<Status>("idle");
-  useSettle(own, setOwn);
-  const status = controlled ?? own;
-  const pretend = simulate
-    ? async (e: MouseEvent<HTMLElement>) => {
-        e.preventDefault();
-        if (own === "loading") return;
-        setOwn("loading");
-        await new Promise((r) => setTimeout(r, simulate));
-        setOwn(fail ? "error" : "done");
-      }
-    : undefined;
-  return (
-    <StatusButton
-      status={status}
-      labels={labels}
-      cycle="send"
-      settings={s}
-      type={simulate ? "button" : "submit"}
-      onClick={pretend}
-    />
-  );
+  return <StatusButton status={status} labels={labels} cycle="send" settings={s} type="submit" />;
 }
 
 /**
  * "Email me": opens the visitor's mail app (a plain mailto link, so it works without JavaScript) and copies the
  * address too, for anyone without one. A mailto link can't report whether a mail app opened, so the button says what
  * it knows: the envelope seals and leaves, then "Address copied" (if copying wasn't allowed, the "Opening mail" label
- * stays as the outcome). `noMail` skips opening the mail app (the studio).
+ * stays as the outcome).
  */
 export function EmailButton({
   email,
   labels,
   kind = "primary",
   settings: s = buttonSettings,
-  noMail,
 }: {
   email: string;
   labels: Omit<Labels, "error">;
   kind?: ButtonKind;
   settings?: ButtonSettings;
-  noMail?: boolean;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [copied, setCopied] = useState(true);
   useSettle(status, setStatus);
-  const open = (e: MouseEvent<HTMLElement>) => {
-    if (noMail) e.preventDefault();
+  const open = () => {
     if (status !== "idle") return;
     setStatus("loading");
     const copy = navigator.clipboard?.writeText(email) ?? Promise.reject(new Error("no clipboard"));

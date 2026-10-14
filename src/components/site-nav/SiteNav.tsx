@@ -8,7 +8,7 @@ import { FloatingNav } from "./FloatingNav";
 import { usePageTransition } from "./usePageTransition";
 
 /**
- * The site's navigation, as saved from the nav studio (src/components/nav.settings.json), in the page's language.
+ * The site's navigation, as the owner chose it (src/components/nav.settings.json), in the page's language.
  * The site is one scrolling page, so page items jump to its sections and the marker follows the section being read.
  */
 export function SiteNav({ locale }: { locale: Locale }) {

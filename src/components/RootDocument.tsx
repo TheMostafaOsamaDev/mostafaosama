@@ -5,7 +5,7 @@ import { RESTORE_PREFERENCES } from "@/components/preferences-script";
 import { buttonSettings } from "@/components/ui/button-settings";
 
 /**
- * The <html> every root layout shares (English, Arabic, the studios, the 404). The inline script sets
+ * The <html> every root layout shares (English, Arabic, the 404). The inline script sets
  * data-theme / data-motion before hydration, hence suppressHydrationWarning.
  */
 export function RootDocument({
@@ -25,7 +25,7 @@ export function RootDocument({
       lang={lang}
       dir={dir}
       className={fontClass}
-      // The primary colour's palette (globals.css), chosen in the button studio.
+      // The primary colour's palette (globals.css), from buttons.settings.json.
       data-primary={buttonSettings.primary}
       style={{ "--glow-base": glowSettings.background } as CSSProperties}
       suppressHydrationWarning

@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import { DICTIONARIES, type Dictionary } from "@/i18n/dictionaries";
 import type { HomeSettings } from "./home";
-import { HEROES } from "./heroes";
+import { Hero } from "./heroes";
 import "./home.css";
 
 const Bar = ({ className = "" }: { className?: string }) => <div className={`rounded-md bg-ink/6 ${className}`} />;
@@ -30,7 +30,6 @@ function Placeholder({ id, title, note }: { id: string; title: string; note: str
 
 /** The single-page site: the hero, then the sections the nav jumps between. */
 export function HomePage({ settings, locale = "en" }: { settings: HomeSettings; locale?: Locale }) {
-  const Hero = HEROES[settings.variant];
   const t: Dictionary = DICTIONARIES[locale];
   const sections = ["about", "work", "contact"] as const;
   return (

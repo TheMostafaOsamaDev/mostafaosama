@@ -35,17 +35,7 @@
     "pageDistance": 16,
     "separators": true,
     "press": true,
-    "items": [
-      "home",
-      "about",
-      "work",
-      "contact",
-      "cv",
-      "github",
-      "linkedin",
-      "theme",
-      "lang"
-    ]
+    "items": ["home", "about", "work", "contact", "cv", "github", "linkedin", "theme", "lang"]
   },
   "mobile": {
     "library": "hugeicons",
@@ -81,16 +71,6 @@
     "pageDistance": 16,
     "separators": true,
     "press": true,
-    "items": [
-      "home",
-      "about",
-      "work",
-      "contact",
-      "cv",
-      "github",
-      "linkedin",
-      "theme",
-      "lang"
-    ]
+    "items": ["home", "about", "work", "contact", "cv", "github", "linkedin", "theme", "lang"]
   }
 }

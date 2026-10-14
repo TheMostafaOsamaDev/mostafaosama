@@ -1,6 +1,5 @@
-/* Buttons: magnetic (they lean toward the cursor; ButtonEffects sets --tx / --ty) in a chosen look, plus the download
-   button's states. Data attributes come from Button.tsx and the saved settings. data-state="hover|focus|active"
-   freezes a state for the button studio's showcase. */
+/* Buttons: magnetic (they follow the cursor; ButtonEffects sets --tx / --ty) in the saved look, with the rising fill,
+   plus the stateful buttons' cycles. Data attributes come from Button.tsx and buttons.settings.json. */
 
 .btn,
 .btn-link {
@@ -292,23 +291,23 @@
   color: var(--ink);
 }
 
-/* ── Hover, press, focus (the studio freezes them with data-state) ──────────────────────────────────────── */
-.btn[data-look="solid"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+/* ── Hover, press, focus ─────────────────────────────────────────────────────────────────────────────────── */
+.btn[data-look="solid"]:not([aria-disabled="true"]):hover {
   background-color: color-mix(in oklab, var(--accent), var(--ink) 10%);
 }
-.btn[data-look="soft"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-look="soft"]:not([aria-disabled="true"]):hover {
   background-color: color-mix(in oklab, var(--accent) 18%, transparent);
 }
-.btn[data-look="outline"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-look="outline"]:not([aria-disabled="true"]):hover {
   box-shadow: inset 0 0 0 1.5px var(--accent);
 }
-.btn[data-look="ghost"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-look="ghost"]:not([aria-disabled="true"]):hover {
   background-color: color-mix(in oklab, var(--ink) 7%, transparent);
 }
 /* Fill "rise" (as on dennissnellenberg.com): an oval half again as wide and twice as tall as the button, parked
    above it. On hover ButtonEffects drops it below and slides it up over the button (0.6 s, power2.inOut); on leave it
    carries on out through the top. The text turns over 0.3 s on the way in, and back 0.3 s after the cursor leaves.
-   Keyboard focus and the studio's frozen hover show it filled; the busy and done states of the main button too. */
+   Keyboard focus shows it filled, and the busy main button keeps it while it works. */
 .btn-fill {
   position: absolute;
   z-index: -1;
@@ -321,7 +320,7 @@
   translate: 0 -76%;
   pointer-events: none;
 }
-.btn:not([aria-disabled="true"]):is([data-hot], [data-state="hover"], :focus-visible) > .btn-fill,
+.btn:not([aria-disabled="true"]):is([data-hot], :focus-visible) > .btn-fill,
 .btn[data-kind="primary"][data-status="loading"] > .btn-fill {
   translate: none;
 }
@@ -333,7 +332,7 @@
     background-color 0.25s,
     color calc(var(--fill-time, 0.6s) / 2) calc(var(--fill-time, 0.6s) / 2) cubic-bezier(0.215, 0.61, 0.355, 1);
 }
-.btn[data-fill]:not([aria-disabled="true"]):is([data-hot], [data-state="hover"], :focus-visible),
+.btn[data-fill]:not([aria-disabled="true"]):is([data-hot], :focus-visible),
 .btn[data-fill][data-kind="primary"][data-status="loading"] {
   color: var(--on-primary);
   transition:
@@ -354,7 +353,7 @@
   --spring: 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
   cursor: not-allowed;
 }
-.btn[aria-disabled="true"]:is(:active, [data-state="active"]) {
+.btn[aria-disabled="true"]:active {
   scale: none;
 }
 .btn[aria-disabled="true"] > .btn-fill {
@@ -364,13 +363,13 @@
   translate: none;
 }
 /* The fill is the hover: the button's own colour stays put underneath it. */
-.btn[data-fill][data-look="solid"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-fill][data-look="solid"]:not([aria-disabled="true"]):hover {
   background-color: var(--accent);
 }
-.btn[data-fill][data-look="outline"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-fill][data-look="outline"]:not([aria-disabled="true"]):hover {
   box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--accent) 45%, transparent);
 }
-.btn[data-fill][data-shadow]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-fill][data-shadow]:not([aria-disabled="true"]):hover {
   box-shadow: 0 12px 26px -12px color-mix(in oklab, var(--primary) 75%, transparent);
 }
 
@@ -381,35 +380,23 @@
 }
 
 /* An optional soft shadow in the button's own colour, so it seems to lift toward the cursor. */
-.btn[data-shadow][data-look="solid"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-shadow][data-look="solid"]:not([aria-disabled="true"]):hover {
   box-shadow: 0 12px 26px -12px color-mix(in oklab, var(--accent) 75%, transparent);
 }
-.btn[data-shadow]:is([data-look="soft"], [data-look="ghost"]):not([aria-disabled="true"]):is(
-    :hover,
-    [data-state="hover"]
-  ) {
+.btn[data-shadow]:is([data-look="soft"], [data-look="ghost"]):not([aria-disabled="true"]):is(:hover) {
   box-shadow: 0 10px 22px -14px color-mix(in oklab, var(--ink) 45%, transparent);
 }
-.btn[data-shadow][data-look="outline"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+.btn[data-shadow][data-look="outline"]:not([aria-disabled="true"]):hover {
   box-shadow:
     inset 0 0 0 1.5px var(--accent),
     0 10px 22px -14px color-mix(in oklab, var(--accent) 60%, transparent);
 }
-/* The frozen hover in the studio shows a typical pull. */
-.btn[data-magnetic][data-state="hover"] {
-  --tx: 4px;
-  --ty: -2px;
-  --lx: 2.4px;
-  --ly: -1.2px;
-}
 
-.btn[data-press]:is(:active, [data-state="active"]) {
+.btn[data-press]:active {
   scale: 0.97;
 }
 .btn:focus-visible,
-.btn[data-state="focus"],
-.btn-link:focus-visible,
-.btn-link[data-state="focus"] {
+.btn-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
@@ -543,7 +530,7 @@
   --on-settled: var(--on-danger);
 }
 .btn:is([data-status="done"], [data-status="error"]),
-.btn:is([data-status="done"], [data-status="error"]):is(:hover, [data-state="hover"], :active, [data-state="active"]) {
+.btn:is([data-status="done"], [data-status="error"]):is(:hover, :active) {
   --ring-base: inset 0 0 0 1.5px color-mix(in oklab, var(--settled) 40%, transparent);
   cursor: not-allowed;
   scale: none;
@@ -552,12 +539,7 @@
   box-shadow: var(--ring-base);
 }
 .btn:is([data-status="done"], [data-status="error"])[data-look="solid"],
-.btn:is([data-status="done"], [data-status="error"])[data-look="solid"]:is(
-    :hover,
-    [data-state="hover"],
-    :active,
-    [data-state="active"]
-  ) {
+.btn:is([data-status="done"], [data-status="error"])[data-look="solid"]:is(:hover, :active) {
   --ring-base: 0 0 #0000;
   color: var(--on-settled);
   background-color: var(--settled);
@@ -721,13 +703,13 @@
 [dir="rtl"] .btn-link {
   background-position: right 100%;
 }
-.btn-link[data-link="grow"]:is(:hover, [data-state="hover"]) {
+.btn-link[data-link="grow"]:hover {
   background-size: 100% 1.5px;
 }
 .btn-link[data-link="slide"] {
   background-size: 100% 1.5px;
 }
-.btn-link[data-link="slide"]:is(:hover, [data-state="hover"]) {
+.btn-link[data-link="slide"]:hover {
   animation: btn-underline 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 @keyframes btn-underline {
@@ -754,10 +736,10 @@
 [dir="rtl"] .btn-link .btn-arrow {
   scale: -1 1;
 }
-.btn-link[data-link="arrow"]:is(:hover, [data-state="hover"]) .btn-arrow {
+.btn-link[data-link="arrow"]:hover .btn-arrow {
   translate: 3px 0;
 }
-[dir="rtl"] .btn-link[data-link="arrow"]:is(:hover, [data-state="hover"]) .btn-arrow {
+[dir="rtl"] .btn-link[data-link="arrow"]:hover .btn-arrow {
   translate: -3px 0;
 }
 

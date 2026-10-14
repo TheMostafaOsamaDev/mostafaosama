@@ -133,7 +133,7 @@ export function FloatingNav({
   config: NavConfig;
   base: string;
   replay: number;
-  /** Width covered on the left (the studio panel); the nav centres in the rest. Matches --nav-offset-start. */
+  /** Width covered on the left (a side panel); the nav centres in the rest. Matches --nav-offset-start. */
   insetStart?: number;
   /**
    * One scrolling page: page items jump to the matching `<section id data-section>` on the home page (smooth scroll),

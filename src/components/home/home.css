@@ -1,4 +1,4 @@
-/* The home hero: photo treatments, entrances and each idea's signature. Entrances are CSS, so they start with the
+/* The home hero ("inline"): photo treatments, entrances and its signature. Entrances are CSS, so they start with the
    first paint (no JavaScript, no flash of hidden text); the section's data attributes pick which one runs. */
 
 /* ── Photo: shape, tone, edge ────────────────────────────────────────────────────────────────────────────── */
@@ -47,16 +47,9 @@
   filter: grayscale(1) contrast(1.08);
 }
 
-/* Edges: "fade" dissolves the busy corners into the page; "glow" is the deep fade of the glow hero. */
+/* Edges: "fade" dissolves the busy corners into the page. */
 .hero-photo[data-edge="fade"] {
   mask-image: radial-gradient(ellipse 72% 78% at 50% 40%, #000 55%, transparent 100%);
-}
-.hero-photo[data-edge="glow"] {
-  mask-image: radial-gradient(ellipse 62% 70% at 58% 36%, #000 38%, rgb(0 0 0 / 0.5) 62%, transparent 86%);
-}
-/* Right to left the glow portrait sits on the left, so its fade mirrors. */
-[dir="rtl"] .hero-photo[data-edge="glow"] {
-  mask-image: radial-gradient(ellipse 62% 70% at 42% 36%, #000 38%, rgb(0 0 0 / 0.5) 62%, transparent 86%);
 }
 
 /* ── Entrances ───────────────────────────────────────────────────────────────────────────────────────────── */
@@ -193,52 +186,6 @@
   width: 2.6em;
 }
 
-/* Card: leans toward the pointer (Tilt sets the variables), with a sheen where the light would hit. */
-.hero-tilt {
-  position: relative;
-  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.hero-tilt[data-tilting] {
-  transition-duration: 0.12s;
-}
-.hero-tilt::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.22), transparent 55%);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.hero-tilt[data-tilting]::after {
-  opacity: 1;
-}
-
-/* Glow: the parallax layers ease toward the pointer instead of jumping. */
-[data-parallax] {
-  transition: translate 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Centered: a ring draws itself around the photo once, then rests. */
-@property --ring {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 360deg;
-}
-.hero-ring {
-  background: conic-gradient(from -90deg, var(--primary) var(--ring), transparent 0);
-}
-[data-signature] .hero-ring {
-  animation: hero-ring 1.6s cubic-bezier(0.65, 0, 0.35, 1) 400ms both;
-}
-@keyframes hero-ring {
-  from {
-    --ring: 0deg;
-  }
-}
-
 /* Availability dot: a slow breath, the only looping motion on the page. */
 [data-signature] .hero-status {
   animation: hero-breathe 2.8s ease-in-out infinite;
@@ -246,65 +193,6 @@
 @keyframes hero-breathe {
   50% {
     box-shadow: 0 0 0 5px rgb(16 185 129 / 0.18);
-  }
-}
-
-/* Scroll-driven signatures (where the browser supports scroll timelines; elsewhere they simply don't run).
-   Split: the portrait drifts up and fades as the hero scrolls away. Editorial: the names part, the photo pans. */
-@supports (animation-timeline: scroll()) {
-  [data-signature] .hero-drift {
-    animation: hero-drift linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 100svh;
-  }
-  [data-signature] .hero-part-left,
-  [data-signature] .hero-part-right {
-    animation: linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 100svh;
-  }
-  [data-signature] .hero-part-left {
-    animation-name: hero-part-left;
-  }
-  /* Right to left the first name starts on the right, so the names part the other way. */
-  [dir="rtl"] [data-signature] .hero-part-left {
-    animation-name: hero-part-right;
-  }
-  [dir="rtl"] [data-signature] .hero-part-right {
-    animation-name: hero-part-left;
-  }
-  [data-signature] .hero-strip img {
-    animation: hero-strip linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 100svh;
-  }
-  [data-signature] .hero-part-right {
-    animation-name: hero-part-right;
-  }
-}
-@keyframes hero-drift {
-  to {
-    translate: 0 -14%;
-    opacity: 0.35;
-  }
-}
-/* The photo pans a little inside its frame, like passing a window. */
-@keyframes hero-strip {
-  from {
-    object-position: 50% 14%;
-  }
-  to {
-    object-position: 50% 30%;
-  }
-}
-@keyframes hero-part-left {
-  to {
-    translate: -18% 0;
-  }
-}
-@keyframes hero-part-right {
-  to {
-    translate: 18% 0;
   }
 }
 

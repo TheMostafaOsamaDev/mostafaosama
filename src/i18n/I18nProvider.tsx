@@ -8,7 +8,7 @@ type I18n = { locale: Locale; dir: "ltr" | "rtl"; t: Dictionary };
 
 const I18nContext = createContext<I18n>({ locale: "en", dir: "ltr", t: DICTIONARIES.en });
 
-/** The page's language for client components (the nav). The studios don't set it, so they read English. */
+/** The page's language for client components (the nav). Without a provider they read English. */
 export function I18nProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
   return <I18nContext value={{ locale, dir: DIR[locale], t: DICTIONARIES[locale] }}>{children}</I18nContext>;
 }

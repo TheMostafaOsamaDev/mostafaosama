@@ -7,7 +7,7 @@
   --paper: #ffffff;
   --ink: #15171a;
   --muted: #5f666d;
-  /* The primary colour: one of five palettes (data-primary on <html>, chosen in the button studio; Teal by
+  /* The primary colour: one of five palettes (data-primary on <html>, from buttons.settings.json; Teal by
      default), each with its own light and dark shade, contrast measured (WCAG AA or better): light shades carry
      white text at 5.2–5.7:1; dark shades sit on the page at 10.2–10.7:1 and carry --on-primary at 9.3–9.7:1. */
   --primary: #127686;

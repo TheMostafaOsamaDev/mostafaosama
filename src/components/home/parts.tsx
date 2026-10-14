@@ -23,7 +23,7 @@ export function Portrait({
 }: {
   settings: HomeSettings;
   shape?: HomeSettings["shape"] | "pill";
-  edge?: HomeSettings["edge"] | "glow";
+  edge?: HomeSettings["edge"];
   className?: string;
   sizes: string;
   priority?: boolean;

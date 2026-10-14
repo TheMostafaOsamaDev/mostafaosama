@@ -1,6 +1,5 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowUp01Icon,
@@ -57,18 +56,7 @@ const HUGE: Record<IconId, typeof Home01Icon> = {
   check: Tick02Icon,
 };
 
-/**
- * The site's icons: Hugeicons, the library chosen in the nav studio. Only these are bundled. If nav.settings.json
- * switches library, swap the imports here (the studio's own icons.tsx has every library's names).
- */
-function HugeNavIcon({ id, style }: NavIconProps) {
+/** A nav icon. The site's icons are Hugeicons (the owner's choice); only these are bundled. */
+export function NavIcon({ id, style }: NavIconProps) {
   return <HugeiconsIcon icon={HUGE[id]} size={style.size} strokeWidth={style.stroke} aria-hidden />;
-}
-
-/** How the nav draws an icon. The studio provides a renderer that covers every library. */
-export const NavIconContext = createContext<(props: NavIconProps) => ReactNode>(HugeNavIcon);
-
-/** A nav icon, drawn by the renderer in context (Hugeicons on the site). */
-export function NavIcon(props: NavIconProps) {
-  return useContext(NavIconContext)(props);
 }
