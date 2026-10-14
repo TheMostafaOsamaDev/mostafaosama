@@ -1,0 +1,4 @@
+allowBuilds:
+  # Only a fallback that fetches a native binary when the platform package is missing; the platform package
+  # (@unrs/resolver-binding-*) is installed as a normal optional dependency, so the script is not needed.
+  unrs-resolver: false

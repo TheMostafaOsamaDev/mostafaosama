@@ -7,16 +7,95 @@
   --paper: #ffffff;
   --ink: #15171a;
   --muted: #5f666d;
+  /* The primary colour: one of five palettes (data-primary on <html>, chosen in the button studio; Teal by
+     default), each with its own light and dark shade, contrast measured (WCAG AA or better): light shades carry
+     white text at 5.2–5.7:1; dark shades sit on the page at 10.2–10.7:1 and carry --on-primary at 9.3–9.7:1. */
+  --primary: #127686;
+  --on-primary: #ffffff;
+  /* Errors: 5.7:1 on white and with white text; dark: 8.3:1 on the page, 8.1:1 with --on-danger. */
+  --danger: #c4281c;
+  --on-danger: #ffffff;
+  /* Success (a finished download or send): 5.6:1 with white; dark: 10.1:1 on the page, 9.5:1 with --on-success. */
+  --success: #137738;
+  --on-success: #ffffff;
   color-scheme: light;
 }
 
+/* Dark follows the OS unless the visitor chose a theme: data-theme on <html> (see preferences.ts). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: var(--glow-base, #120f17);
     --ink: #e9ebee;
     --muted: #9aa1a8;
+    --primary: #49d2ea;
+    --on-primary: #001f25;
+    --danger: #ff8a80;
+    --on-danger: #2b0805;
+    --success: #56d57b;
+    --on-success: #021c09;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --paper: var(--glow-base, #120f17);
+  --ink: #e9ebee;
+  --muted: #9aa1a8;
+  --primary: #49d2ea;
+  --on-primary: #001f25;
+  --danger: #ff8a80;
+  --on-danger: #2b0805;
+  --success: #56d57b;
+  --on-success: #021c09;
+  color-scheme: dark;
+}
+
+/* The other primary palettes (Teal is the default above). */
+:root[data-primary="ocean"] {
+  --primary: #12719e;
+}
+:root[data-primary="lagoon"] {
+  --primary: #127879;
+}
+:root[data-primary="jade"] {
+  --primary: #137b60;
+}
+:root[data-primary="cobalt"] {
+  --primary: #0d63d0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-primary="ocean"] {
+    --primary: #77c8f8;
+    --on-primary: #051d2b;
+  }
+  :root:not([data-theme="light"])[data-primary="lagoon"] {
+    --primary: #44d5d7;
+    --on-primary: #002021;
+  }
+  :root:not([data-theme="light"])[data-primary="jade"] {
+    --primary: #61d7b2;
+    --on-primary: #032018;
+  }
+  :root:not([data-theme="light"])[data-primary="cobalt"] {
+    /* The light shade's hue (OKLCH 258°) at full strength: 5.1:1 on the page, 4.9:1 with its text. */
+    --primary: #2981fb;
+    --on-primary: #041531;
+  }
+}
+:root[data-theme="dark"][data-primary="ocean"] {
+  --primary: #77c8f8;
+  --on-primary: #051d2b;
+}
+:root[data-theme="dark"][data-primary="lagoon"] {
+  --primary: #44d5d7;
+  --on-primary: #002021;
+}
+:root[data-theme="dark"][data-primary="jade"] {
+  --primary: #61d7b2;
+  --on-primary: #032018;
+}
+:root[data-theme="dark"][data-primary="cobalt"] {
+  --primary: #2981fb;
+  --on-primary: #041531;
 }
 
 @theme inline {
@@ -29,7 +108,9 @@
   body {
     background: var(--paper);
     color: var(--ink);
+    /* The chosen font (src/fonts/site-latin.ts): its Latin face here; its Arabic face on Arabic pages below. */
     font-family:
+      var(--font-latin, ui-sans-serif),
       ui-sans-serif,
       system-ui,
       -apple-system,
@@ -42,4 +123,15 @@
     outline: 2px solid currentColor;
     outline-offset: 3px;
   }
+}
+
+/* Arabic: the Arabic face (Arabic letters only; Latin words fall through to the Latin face), a little more line
+   height for its taller letterforms, and no letter-spacing: spacing pulls Arabic's joined letters apart. */
+:lang(ar) {
+  font-family:
+    var(--font-arabic, ui-sans-serif), var(--font-latin, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: normal !important;
+}
+:lang(ar) body {
+  line-height: 1.7;
 }

@@ -1,0 +1,22 @@
+{
+  "look": "solid",
+  "secondary": "soft",
+  "accent": "ink",
+  "primary": "cobalt",
+  "fill": "rise",
+  "shape": "pill",
+  "size": "lg",
+  "icons": "start",
+  "spring": "elastic",
+  "progress": "outline",
+  "sending": "dots",
+  "link": "grow",
+  "strength": 12.5,
+  "follow": 0.6,
+  "fillTime": 0.45,
+  "followTime": 1,
+  "releaseTime": 1.5,
+  "shadow": false,
+  "press": true,
+  "percent": false
+}

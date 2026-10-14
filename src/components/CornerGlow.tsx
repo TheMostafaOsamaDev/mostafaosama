@@ -1,40 +1,29 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { glowPalette, glowSettings, type GlowSettings } from "./glow";
+import { usePreferences } from "./preferences";
 
 // React Bits' Grainient, installed unmodified from the registry. WebGL only exists in the browser and the
 // glow is decoration, so it loads after the page and never on the server.
 const Grainient = dynamic(() => import("./Grainient"), { ssr: false });
 
-const DARK_QUERY = "(prefers-color-scheme: dark)";
-
-function subscribe(onChange: () => void) {
-  const mq = window.matchMedia(DARK_QUERY);
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-
 /** Remounts after a GPU reset at most this often, so a broken GPU can't put it in a loop. */
 const RECOVER_AFTER_MS = 1000;
 const MAX_RECOVERIES = 3;
 
-/** The site's glow: saved settings, following the visitor's colour scheme. */
+/** The site's glow: saved settings, following the visitor's colour scheme (or their theme choice). */
 export function CornerGlow() {
-  const scheme = useSyncExternalStore(
-    subscribe,
-    () => (window.matchMedia(DARK_QUERY).matches ? "dark" : "light"),
-    () => null,
-  );
-  if (!scheme) return null;
-  return <CornerGlowView settings={glowSettings} scheme={scheme} />;
+  const prefs = usePreferences();
+  if (!prefs) return null;
+  return <CornerGlowView settings={glowSettings} scheme={prefs.dark ? "dark" : "light"} />;
 }
 
 /**
- * The grain layer and the corner glow. The glow's palette comes from `glowPalette`, which puts the background in
- * front so the glow dissolves into the page (see glow.ts). Light mode is Grainient's own `lightMode`, which turns
- * those background stops into pure white, so the light page background is exactly #ffffff.
+ * The grain layer and the corner glow. The glow's palette comes from `glowPalette`, which puts the page colour in
+ * front so the glow dissolves into the page (see glow.ts); light mode uses `lightColors` over white. The grain layer
+ * uses Grainient's own `lightMode`, which turns its background stops into pure white, so the light page is #ffffff.
  */
 function CornerGlowView({ settings, scheme }: { settings: GlowSettings; scheme: "light" | "dark" }) {
   const frame = useRef<HTMLDivElement>(null);
@@ -61,9 +50,22 @@ function CornerGlowView({ settings, scheme }: { settings: GlowSettings; scheme: 
     };
   }, [scheme]);
 
-  const { reach: reachVmin, maxReach, attach, ...grain } = settings;
-  const reach = `min(${reachVmin}vmin, ${maxReach}px)`;
+  const {
+    reach: darkReach,
+    maxReach: darkMax,
+    lightReach,
+    lightMaxReach,
+    attach,
+    lightGrain,
+    lightColors,
+    ...rest
+  } = settings;
   const light = scheme === "light";
+  const reachVmin = light ? lightReach : darkReach;
+  const maxReach = light ? lightMaxReach : darkMax;
+  const grain = light ? { ...rest, grainAmount: rest.grainAmount * lightGrain } : rest;
+  const reach = `min(${reachVmin}vmin, ${maxReach}px)`;
+
   return (
     // One wrapper so the context-loss listener above covers both canvases; `contents` keeps it out of layout.
     <div ref={frame} aria-hidden className="contents">
@@ -101,7 +103,12 @@ function CornerGlowView({ settings, scheme }: { settings: GlowSettings; scheme: 
           className="absolute top-0 right-0 aspect-square translate-x-1/2 -translate-y-1/2 [mask-image:radial-gradient(closest-side,#000_30%,rgb(0_0_0/0.55)_60%,transparent_92%)]"
           style={{ width: `calc(2 * ${reach})` }}
         >
-          <Grainient key={`${scheme}-${generation}`} {...grain} colors={glowPalette(grain)} lightMode={light} dpr={1} />
+          <Grainient
+            key={`${scheme}-${generation}`}
+            {...grain}
+            colors={glowPalette({ ...grain, lightColors }, light)}
+            dpr={1}
+          />
         </div>
       </div>
     </div>

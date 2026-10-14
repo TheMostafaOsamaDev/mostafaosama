@@ -1,0 +1,430 @@
+/* The floating nav: its surface, items and panels, the theme switch, and the page transitions it drives. */
+
+:root {
+  --nav-hi: rgb(255 255 255 / 0.7);
+  --nav-shade-a: 1;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nav-hi: rgb(255 255 255 / 0.07);
+    --nav-shade-a: 2.2;
+  }
+}
+:root[data-theme="dark"] {
+  --nav-hi: rgb(255 255 255 / 0.07);
+  --nav-shade-a: 2.2;
+}
+
+/* ── Surface ─────────────────────────────────────────────────────────────────────────────────────────────── */
+.nav-shell {
+  color: var(--ink);
+  border: 1px solid transparent;
+  transition:
+    background-color 0.45s ease,
+    box-shadow 0.45s ease,
+    border-color 0.45s ease,
+    backdrop-filter 0.45s ease;
+}
+/* Scroll "bare": over the first section the bar is only its items; the surface fades in once it's left. More
+   specific than the surface and shadow rules below so it wins over them; the filter keeps the same functions as
+   glass (at zero) so the blur fades instead of switching. */
+.nav-shell[data-bare][data-surface] {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: blur(0px) saturate(1);
+}
+.nav-shell[data-surface="solid"] {
+  background: color-mix(in oklab, var(--ink) 4%, var(--paper));
+  border-color: color-mix(in oklab, var(--ink) 8%, transparent);
+}
+/* Write only the standard backdrop-filter: the CSS build adds Safari's -webkit- prefix itself. Writing both made
+   it keep only the prefixed one, which Chrome ignores. Blur and tint come from the nav's settings. */
+.nav-shell[data-surface="glass"] {
+  background: color-mix(in oklab, var(--paper) var(--glass-tint, 62%), transparent);
+  border-color: color-mix(in oklab, var(--ink) 10%, transparent);
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.6));
+}
+/* A panel inside the glass pill can't blur the page (the pill is its backdrop), so it is near-opaque. */
+.nav-shell .nav-shell[data-surface="glass"] {
+  background: color-mix(in oklab, var(--paper) 94%, transparent);
+}
+.nav-shell[data-surface="outline"] {
+  background: var(--paper);
+  border-color: color-mix(in oklab, var(--ink) 22%, transparent);
+}
+.nav-shell[data-surface="inverted"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.nav-shell[data-shadow="soft"] {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / calc(0.05 * var(--nav-shade-a))),
+    0 6px 16px -4px rgb(0 0 0 / calc(0.08 * var(--nav-shade-a)));
+}
+.nav-shell[data-shadow="raised"] {
+  box-shadow:
+    inset 0 1px 0 var(--nav-hi),
+    0 1px 2px rgb(0 0 0 / calc(0.06 * var(--nav-shade-a))),
+    0 12px 32px -10px rgb(0 0 0 / calc(0.25 * var(--nav-shade-a)));
+}
+.nav-shell[data-shadow="floating"] {
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / calc(0.05 * var(--nav-shade-a))),
+    0 28px 56px -18px rgb(0 0 0 / calc(0.36 * var(--nav-shade-a)));
+}
+
+/* ── Items ───────────────────────────────────────────────────────────────────────────────────────────────── */
+.nav-item {
+  color: inherit;
+  outline-offset: 2px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-glyph,
+.nav-text {
+  opacity: 0.62;
+  transition: opacity 0.2s;
+}
+.nav-item:hover :is(.nav-glyph, .nav-text),
+.nav-item:focus-visible :is(.nav-glyph, .nav-text),
+.nav-item[aria-expanded="true"] .nav-glyph,
+.nav-item[aria-current] :is(.nav-glyph, .nav-text) {
+  opacity: 1;
+}
+.nav-indicator {
+  background: color-mix(in oklab, currentColor 9%, transparent);
+}
+.nav-bubble {
+  background: color-mix(in oklab, currentColor 6%, transparent);
+}
+.nav-indicator-dot,
+.nav-indicator-line {
+  background: currentColor;
+}
+.nav-sep {
+  align-self: center;
+  background: color-mix(in oklab, currentColor 14%, transparent);
+}
+
+/* Tooltips sit on the side of the nav that faces the page. */
+.nav-tip {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  transition:
+    opacity 0.15s,
+    translate 0.15s;
+}
+.nav-tip kbd {
+  margin-left: 6px;
+  font: inherit;
+  opacity: 0.6;
+}
+.nav-shell[data-surface="inverted"] .nav-tip {
+  background: var(--paper);
+  color: var(--ink);
+}
+.nav-tip[data-side="above"] {
+  bottom: calc(100% + var(--tip-gap));
+  left: 50%;
+  translate: -50% 4px;
+}
+.nav-tip[data-side="below"] {
+  top: calc(100% + var(--tip-gap));
+  left: 50%;
+  translate: -50% -4px;
+}
+.nav-tip[data-side="right"] {
+  left: calc(100% + var(--tip-gap));
+  top: 50%;
+  translate: -4px -50%;
+}
+.nav-tip[data-side="left"] {
+  right: calc(100% + var(--tip-gap));
+  top: 50%;
+  translate: 4px -50%;
+}
+.nav-item:is(:hover, :focus-visible) .nav-tip {
+  opacity: 1;
+}
+.nav-item:is(:hover, :focus-visible) .nav-tip:is([data-side="above"], [data-side="below"]) {
+  translate: -50% 0;
+}
+.nav-item:is(:hover, :focus-visible) .nav-tip:is([data-side="left"], [data-side="right"]) {
+  translate: 0 -50%;
+}
+.nav-shell[data-panel-open] .nav-tip {
+  display: none;
+}
+@media (hover: none) {
+  .nav-tip {
+    display: none;
+  }
+}
+
+/* ── Panels: menu, settings, bottom sheet, search palette ────────────────────────────────────────────────── */
+.nav-panel-link {
+  color: inherit;
+  transition: background-color 0.15s;
+}
+.nav-panel-link:hover,
+.nav-panel-link:focus-visible,
+.nav-panel-link[data-highlight] {
+  background: color-mix(in oklab, currentColor 7%, transparent);
+}
+.nav-panel-link[aria-current] {
+  font-weight: 600;
+  background: color-mix(in oklab, currentColor 9%, transparent);
+}
+.nav-panel-heading {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+.nav-seg {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 10px;
+  background: color-mix(in oklab, currentColor 7%, transparent);
+}
+.nav-seg label {
+  flex: 1;
+  cursor: pointer;
+  text-align: center;
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  transition: background-color 0.15s;
+}
+.nav-seg label:has(:checked) {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}
+.nav-seg label:has(:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+.nav-backdrop {
+  background: color-mix(in oklab, var(--ink) 18%, transparent);
+}
+.nav-palette-input {
+  background: transparent;
+  outline: none;
+}
+.nav-palette-input::placeholder {
+  color: inherit;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-tip {
+    transition: opacity 0.15s;
+  }
+}
+
+/* ── Theme switch ────────────────────────────────────────────────────────────────────────────────────────────
+   setTheme() wraps the change in a document view transition and adds .theme-vt-fade or .theme-vt-circle. The nav
+   and the studio panel drop their own transition names meanwhile, so they change with the page. */
+.theme-vt :is(.site-nav, .studio-panel) {
+  view-transition-name: none !important;
+}
+.theme-vt-fade::view-transition-old(root) {
+  animation: 320ms ease-out both pt-fade-out;
+}
+.theme-vt-fade::view-transition-new(root) {
+  animation: none;
+}
+.theme-vt-circle::view-transition-old(root) {
+  animation: none;
+}
+.theme-vt-circle::view-transition-new(root) {
+  animation: 650ms cubic-bezier(0.2, 0, 0, 1) both theme-circle;
+}
+@keyframes theme-circle {
+  from {
+    clip-path: circle(0 at var(--tv-x) var(--tv-y));
+  }
+  to {
+    clip-path: circle(var(--tv-r) at var(--tv-x) var(--tv-y));
+  }
+}
+
+/* ── Page transitions ────────────────────────────────────────────────────────────────────────────────────────
+   Pages are wrapped in React's <ViewTransition> with these classes (pt-in / pt-out, plus -fwd / -back from the
+   nav's transition types). usePageTransition sets the animation names, timing and distance as variables on <html>. */
+
+/* The nav is named only while a transition runs. An element with a view-transition-name is a backdrop root, so a
+   permanent name left the glass blurring only the nav itself, never the page under it: text showed through sharp. */
+:root:active-view-transition .site-nav {
+  view-transition-name: site-nav;
+}
+/* The nav (and the studio's panel) stay live while pages change: no snapshot cross-fade. */
+::view-transition-group(site-nav),
+::view-transition-group(studio-panel) {
+  animation: none;
+  z-index: 10;
+}
+::view-transition-old(site-nav),
+::view-transition-old(studio-panel) {
+  display: none;
+}
+::view-transition-new(site-nav),
+::view-transition-new(studio-panel),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(.pt-in),
+::view-transition-group(.pt-in-fwd),
+::view-transition-group(.pt-in-back) {
+  z-index: 1;
+}
+
+::view-transition-new(.pt-in),
+::view-transition-new(.pt-in-fwd),
+::view-transition-new(.pt-in-back) {
+  animation: var(--pt-in-dur, 0ms) var(--pt-ease, ease) var(--pt-delay, 0ms) both;
+  background: var(--pt-bg, transparent);
+}
+::view-transition-new(.pt-in) {
+  animation-name: var(--pt-in, none);
+}
+::view-transition-new(.pt-in-fwd) {
+  animation-name: var(--pt-in-fwd, none);
+}
+::view-transition-new(.pt-in-back) {
+  animation-name: var(--pt-in-back, none);
+}
+
+::view-transition-old(.pt-out),
+::view-transition-old(.pt-out-fwd),
+::view-transition-old(.pt-out-back) {
+  animation: var(--pt-out-dur, 0ms) var(--pt-out-ease, ease-in) both;
+}
+::view-transition-old(.pt-out) {
+  animation-name: var(--pt-out, none);
+}
+::view-transition-old(.pt-out-fwd) {
+  animation-name: var(--pt-out-fwd, none);
+}
+::view-transition-old(.pt-out-back) {
+  animation-name: var(--pt-out-back, none);
+}
+
+@keyframes pt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes pt-rise-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--pt-dist);
+  }
+}
+@keyframes pt-rise-out {
+  to {
+    opacity: 0;
+    translate: 0 calc(var(--pt-dist) * -0.5);
+  }
+}
+@keyframes pt-blur-in {
+  from {
+    opacity: 0;
+    filter: blur(var(--pt-blur));
+  }
+}
+@keyframes pt-blur-out {
+  to {
+    opacity: 0;
+    filter: blur(var(--pt-blur));
+  }
+}
+@keyframes pt-scale-in {
+  from {
+    opacity: 0;
+    scale: var(--pt-scale-in);
+  }
+}
+@keyframes pt-scale-out {
+  to {
+    opacity: 0;
+    scale: var(--pt-scale-out);
+  }
+}
+@keyframes pt-slide-in-fwd {
+  from {
+    opacity: 0;
+    translate: calc(var(--pt-dist) * 2) 0;
+  }
+}
+@keyframes pt-slide-in-back {
+  from {
+    opacity: 0;
+    translate: calc(var(--pt-dist) * -2) 0;
+  }
+}
+@keyframes pt-slide-out-fwd {
+  to {
+    opacity: 0;
+    translate: calc(var(--pt-dist) * -2) 0;
+  }
+}
+@keyframes pt-slide-out-back {
+  to {
+    opacity: 0;
+    translate: calc(var(--pt-dist) * 2) 0;
+  }
+}
+@keyframes pt-wipe-in-fwd {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes pt-wipe-in-back {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes pt-reveal-in {
+  from {
+    clip-path: circle(0 at var(--pt-x, 50%) var(--pt-y, 100%));
+  }
+  to {
+    clip-path: circle(var(--pt-r, 150vmax) at var(--pt-x, 50%) var(--pt-y, 100%));
+  }
+}
+/* Keeps the old page in place underneath while the new one wipes or reveals over it. */
+@keyframes pt-hold {
+  from,
+  to {
+    opacity: 1;
+  }
+}

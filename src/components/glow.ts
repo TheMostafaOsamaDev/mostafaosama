@@ -6,6 +6,12 @@ export type GlowSettings = {
   background: string;
   /** The glow's own colours, from its outer edge to the corner. The background is put in front automatically. */
   colors: string[];
+  /**
+   * The glow's colours in light mode (outer edge to corner), shown exactly as written: contrast and saturation are
+   * compensated like the background. Grainient's own lightMode only lightens and reverses the dark colours, which
+   * read as a dusty grey-blue on white.
+   */
+  lightColors: string[];
   type: "linear" | "radial";
   angle: number;
   bands: number;
@@ -15,6 +21,11 @@ export type GlowSettings = {
   speed: number;
   silk: number;
   grainAmount: number;
+  /**
+   * Grain strength in light mode, as a share of grainAmount (0–1). Grain can only darken a white page (nothing goes
+   * above white), so full strength reads slightly grey there; dark mode always uses grainAmount as is.
+   */
+  lightGrain: number;
   grainSize: number;
   contrast: number;
   saturation: number;
@@ -28,18 +39,25 @@ export type GlowSettings = {
   reach: number;
   /** Upper bound for that reach, in px, for very large screens. */
   maxReach: number;
+  /** Reach and its px cap in light mode: a pale glow on white needs more room to read than a bright one on black. */
+  lightReach: number;
+  lightMaxReach: number;
   /** "fixed" stays in the corner while the page scrolls; "page" sits at the top of the page and scrolls away. */
   attach: "fixed" | "page";
 };
 
 /**
- * The palette Grainient actually gets: the background twice, then the glow colours. A radial Grainient is still
- * mid-ramp at its canvas edge, so the repeated background stop makes the colour reach the page before the edge
- * and the glow dissolves into it instead of ending in a ring. In light mode Grainient's `lightMode` turns those
- * background stops into white.
+ * The palette Grainient actually gets: the page colour twice, then the glow colours. A radial Grainient is still
+ * mid-ramp at its canvas edge, so the repeated page stop makes the colour reach the page before the edge and the
+ * glow dissolves into it instead of ending in a ring. Light mode fades into white through `lightColors`.
  */
-export function glowPalette(s: Pick<GlowSettings, "background" | "colors" | "contrast" | "saturation">): string[] {
-  const base = undoContrast(s.background, s.contrast, s.saturation);
+export function glowPalette(
+  s: Pick<GlowSettings, "background" | "colors" | "lightColors" | "contrast" | "saturation">,
+  light = false,
+): string[] {
+  const fix = (hex: string) => undoContrast(hex, s.contrast, s.saturation);
+  if (light) return [fix("#ffffff"), fix("#ffffff"), ...s.lightColors.map(fix)];
+  const base = fix(s.background);
   return [base, base, ...s.colors];
 }
 

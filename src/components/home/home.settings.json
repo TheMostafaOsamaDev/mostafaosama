@@ -1,0 +1,13 @@
+{
+  "variant": "inline",
+  "tone": "natural",
+  "shape": "arch",
+  "edge": "fade",
+  "textIn": "blur",
+  "photoIn": "focus",
+  "pace": "brisk",
+  "navReveal": "start",
+  "badge": false,
+  "ctas": true,
+  "signature": true
+}

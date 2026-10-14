@@ -1,0 +1,1061 @@
+/* Buttons: magnetic (they lean toward the cursor; ButtonEffects sets --tx / --ty) in a chosen look, plus the download
+   button's states. Data attributes come from Button.tsx and the saved settings. data-state="hover|focus|active"
+   freezes a state for the button studio's showcase. */
+
+.btn,
+.btn-link {
+  --accent: var(--ink);
+  --on-accent: var(--paper);
+  -webkit-tap-highlight-color: transparent;
+}
+.btn[data-accent="primary"],
+.btn-link[data-accent="primary"] {
+  --accent: var(--primary);
+  --on-accent: var(--on-primary);
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────────────────────────────────────── */
+.btn {
+  --h: 44px;
+  --px: 20px;
+  --fs: 14px;
+  --r: 9999px;
+  /* Letting go: a real damped-spring curve (see the note on data-spring below) over --release-time, a setting. */
+  --spring: var(--release-time, 0.8s) var(--spring-curve);
+  --spring-curve: linear(
+    0,
+    0.0357,
+    0.1217,
+    0.2334,
+    0.3536,
+    0.4711,
+    0.5793,
+    0.6744,
+    0.7552,
+    0.8216,
+    0.8748,
+    0.9161,
+    0.9474,
+    0.9704,
+    0.9866,
+    0.9976,
+    1.0046,
+    1.0086,
+    1.0106,
+    1.0111,
+    1.0107,
+    1.0097,
+    1.0085,
+    1.0071,
+    1.0058,
+    1.0046,
+    1.0036,
+    1.0027,
+    1
+  );
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  height: var(--h);
+  padding-inline: var(--px);
+  border-radius: var(--r);
+  font-size: var(--fs);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  /* Magnetic: the whole button moves a little toward the cursor… */
+  translate: var(--tx, 0px) var(--ty, 0px);
+  transition:
+    translate var(--spring),
+    scale 0.15s ease-out,
+    box-shadow 0.35s,
+    background-color 0.25s,
+    color 0.25s;
+}
+/* …and its content a little further (--lx / --ly, the "follow" setting), which gives it depth. */
+.btn > :is(.btn-label, .btn-icon) {
+  translate: var(--lx, 0px) var(--ly, 0px);
+  transition: translate var(--spring);
+}
+/* How it settles back when the cursor leaves: the step response of a damped spring, sampled into linear().
+   Soft (damping 0.82) overshoots ~1%; snappy (critically damped) not at all; bouncy (0.58) swings ~11% past
+   rest, ~1% back, and glides in. A single overshooting cubic-bezier read as a jolt; a spring curve doesn't. */
+.btn[data-spring="snappy"] {
+  --spring-curve: linear(
+    0,
+    0.0377,
+    0.1243,
+    0.2314,
+    0.3425,
+    0.4481,
+    0.5435,
+    0.6268,
+    0.6977,
+    0.7571,
+    0.8061,
+    0.8461,
+    0.8785,
+    0.9044,
+    0.9251,
+    0.9415,
+    0.9545,
+    0.9647,
+    0.9726,
+    0.9788,
+    0.9837,
+    0.9874,
+    0.9903,
+    0.9926,
+    0.9943,
+    0.9957,
+    0.9967,
+    0.9975,
+    1
+  );
+}
+.btn[data-spring="bouncy"] {
+  --spring-curve: linear(
+    0,
+    0.0272,
+    0.0983,
+    0.1987,
+    0.3158,
+    0.4396,
+    0.5619,
+    0.6767,
+    0.7799,
+    0.8691,
+    0.9429,
+    1.0015,
+    1.0455,
+    1.0763,
+    1.0954,
+    1.1049,
+    1.1066,
+    1.1023,
+    1.0938,
+    1.0825,
+    1.0697,
+    1.0564,
+    1.0435,
+    1.0315,
+    1.0209,
+    1.0118,
+    1.0043,
+    0.9985,
+    0.9942,
+    0.9912,
+    0.9895,
+    0.9887,
+    0.9887,
+    0.9893,
+    0.9903,
+    0.9915,
+    0.9929,
+    0.9943,
+    0.9957,
+    0.9969,
+    1
+  );
+}
+/* Elastic: GSAP's elastic.out(1, 0.3) (the reference uses it over 1.5 s), sampled into linear(); it swings ~37% past rest
+   and wobbles in, like dennissnellenberg.com's buttons. */
+.btn[data-spring="elastic"] {
+  --spring-curve: linear(
+    0,
+    0.1299,
+    0.3108,
+    0.5185,
+    0.7305,
+    0.9283,
+    1.0975,
+    1.2288,
+    1.3177,
+    1.3641,
+    1.3716,
+    1.3462,
+    1.296,
+    1.2295,
+    1.1552,
+    1.0807,
+    1.0125,
+    0.9551,
+    0.9116,
+    0.8832,
+    0.8697,
+    0.8696,
+    0.8805,
+    0.8997,
+    0.924,
+    0.9505,
+    0.9765,
+    1,
+    1.0194,
+    1.0337,
+    1.0427,
+    1.0464,
+    1.0456,
+    1.0411,
+    1.0339,
+    1.025,
+    1.0156,
+    1.0065,
+    0.9985,
+    0.992,
+    0.9873,
+    0.9845,
+    0.9835,
+    0.9841,
+    0.9859,
+    0.9886,
+    0.9918,
+    0.9951,
+    0.9983,
+    1.001,
+    1.0032,
+    1.0047,
+    1.0056,
+    1.0058,
+    1.0055,
+    1.0048,
+    1.0038,
+    1.0027,
+    1.0015,
+    1.0004,
+    0.9995,
+    0.9987,
+    0.9982,
+    0.998,
+    0.9979,
+    0.9981,
+    0.9984,
+    0.9987,
+    0.9991,
+    0.9996,
+    0.9999,
+    1.0002,
+    1
+  );
+}
+/* While the cursor is on it, the button glides after it: each move re-targets an ease-out over --follow-time (GSAP's power4.out,
+   as the reference does on every mousemove), so it trails softly instead of sticking to the cursor. */
+.btn[data-tracking] {
+  --spring: var(--follow-time, 1.5s) cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.btn[data-size="sm"] {
+  --h: 36px;
+  --px: 14px;
+  --fs: 13px;
+}
+.btn[data-size="lg"] {
+  --h: 52px;
+  --px: 26px;
+  --fs: 15px;
+}
+.btn[data-shape="rounded"] {
+  --r: 12px;
+}
+.btn[data-shape="square"] {
+  --r: 6px;
+}
+.btn[data-kind="icon"] {
+  width: var(--h);
+  padding: 0;
+}
+.btn-icon {
+  display: inline-flex;
+  flex: none;
+}
+
+/* ── Looks ───────────────────────────────────────────────────────────────────────────────────────────────── */
+.btn[data-look="solid"] {
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+.btn[data-look="soft"] {
+  background-color: color-mix(in oklab, var(--accent) 12%, transparent);
+  color: var(--accent);
+}
+.btn[data-look="outline"] {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+.btn[data-look="ghost"] {
+  color: var(--ink);
+}
+
+/* ── Hover, press, focus (the studio freezes them with data-state) ──────────────────────────────────────── */
+.btn[data-look="solid"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  background-color: color-mix(in oklab, var(--accent), var(--ink) 10%);
+}
+.btn[data-look="soft"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  background-color: color-mix(in oklab, var(--accent) 18%, transparent);
+}
+.btn[data-look="outline"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.btn[data-look="ghost"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  background-color: color-mix(in oklab, var(--ink) 7%, transparent);
+}
+/* Fill "rise" (as on dennissnellenberg.com): an oval half again as wide and twice as tall as the button, parked
+   above it. On hover ButtonEffects drops it below and slides it up over the button (0.6 s, power2.inOut); on leave it
+   carries on out through the top. The text turns over 0.3 s on the way in, and back 0.3 s after the cursor leaves.
+   Keyboard focus and the studio's frozen hover show it filled; the busy and done states of the main button too. */
+.btn-fill {
+  position: absolute;
+  z-index: -1;
+  top: -50%;
+  left: -25%;
+  width: 150%;
+  height: 200%;
+  border-radius: 50%;
+  background-color: var(--primary);
+  translate: 0 -76%;
+  pointer-events: none;
+}
+.btn:not([aria-disabled="true"]):is([data-hot], [data-state="hover"], :focus-visible) > .btn-fill,
+.btn[data-kind="primary"][data-status="loading"] > .btn-fill {
+  translate: none;
+}
+.btn[data-fill] {
+  transition:
+    translate var(--spring),
+    scale 0.15s ease-out,
+    box-shadow 0.35s,
+    background-color 0.25s,
+    color calc(var(--fill-time, 0.6s) / 2) calc(var(--fill-time, 0.6s) / 2) cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.btn[data-fill]:not([aria-disabled="true"]):is([data-hot], [data-state="hover"], :focus-visible),
+.btn[data-fill][data-kind="primary"][data-status="loading"] {
+  color: var(--on-primary);
+  transition:
+    translate var(--spring),
+    scale 0.15s ease-out,
+    box-shadow 0.35s,
+    background-color 0.25s,
+    color calc(var(--fill-time, 0.6s) / 2) cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+/* Working, done or failed (aria-disabled, set by StatusButton): locked until it's ready again. No hover, fill, pull
+   or press, and the not-allowed cursor; a button pulled toward the cursor at the click eases straight home, without
+   the letting-go wobble. A fill that was up leaves through the top, as on a leave (ButtonEffects animates it); only
+   the busy main button keeps its fill, its working look, until it's done. */
+.btn-fill {
+  transition: background-color 0.25s;
+}
+.btn[aria-disabled="true"] {
+  --spring: 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: not-allowed;
+}
+.btn[aria-disabled="true"]:is(:active, [data-state="active"]) {
+  scale: none;
+}
+.btn[aria-disabled="true"] > .btn-fill {
+  translate: 0 -76%;
+}
+.btn[data-kind="primary"][data-status="loading"] > .btn-fill {
+  translate: none;
+}
+/* The fill is the hover: the button's own colour stays put underneath it. */
+.btn[data-fill][data-look="solid"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  background-color: var(--accent);
+}
+.btn[data-fill][data-look="outline"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+.btn[data-fill][data-shadow]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  box-shadow: 0 12px 26px -12px color-mix(in oklab, var(--primary) 75%, transparent);
+}
+
+/* A stateful button stays put while it works: no magnetic pull while downloading or sending. */
+.btn:is([data-status="loading"], [data-status="done"], [data-status="error"]),
+.btn:is([data-status="loading"], [data-status="done"], [data-status="error"]) > :not(.btn-fill) {
+  translate: none;
+}
+
+/* An optional soft shadow in the button's own colour, so it seems to lift toward the cursor. */
+.btn[data-shadow][data-look="solid"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  box-shadow: 0 12px 26px -12px color-mix(in oklab, var(--accent) 75%, transparent);
+}
+.btn[data-shadow]:is([data-look="soft"], [data-look="ghost"]):not([aria-disabled="true"]):is(
+    :hover,
+    [data-state="hover"]
+  ) {
+  box-shadow: 0 10px 22px -14px color-mix(in oklab, var(--ink) 45%, transparent);
+}
+.btn[data-shadow][data-look="outline"]:not([aria-disabled="true"]):is(:hover, [data-state="hover"]) {
+  box-shadow:
+    inset 0 0 0 1.5px var(--accent),
+    0 10px 22px -14px color-mix(in oklab, var(--accent) 60%, transparent);
+}
+/* The frozen hover in the studio shows a typical pull. */
+.btn[data-magnetic][data-state="hover"] {
+  --tx: 4px;
+  --ty: -2px;
+  --lx: 2.4px;
+  --ly: -1.2px;
+}
+
+.btn[data-press]:is(:active, [data-state="active"]) {
+  scale: 0.97;
+}
+.btn:focus-visible,
+.btn[data-state="focus"],
+.btn-link:focus-visible,
+.btn-link[data-state="focus"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Download button: ready → downloading → downloaded (or try again) ─────────────────────────────────────── */
+/* Progress, three ways. --p (0–1) comes from DownloadButton. */
+.btn[data-status="loading"][data-progress="fill"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: color-mix(in oklab, var(--on-accent) 22%, transparent);
+  scale: var(--p, 0) 1;
+  transform-origin: left;
+  transition: scale 0.2s linear;
+}
+.btn[data-status="loading"][data-progress="fill"]:not([data-look="solid"])::before {
+  background-color: color-mix(in oklab, var(--accent) 16%, transparent);
+}
+[dir="rtl"] .btn[data-status="loading"][data-progress="fill"]::before {
+  transform-origin: right;
+}
+.btn[data-status="loading"][data-progress="bar"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 12px;
+  bottom: 5px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  scale: var(--p, 0) 1;
+  transform-origin: left;
+  transition: scale 0.2s linear;
+}
+[dir="rtl"] .btn[data-status="loading"][data-progress="bar"]::after {
+  transform-origin: right;
+}
+/* Outline: a line in the primary colour traces the button's edge (clockwise from the top start, so it mirrors in
+   RTL) over a faint track. DownloadButton moves --p every frame, after the arrow's dive and eased in and out over at
+   least TRACE_MS, so it runs smoothly however the bytes arrive. Before the size
+   is known, a short segment runs round instead. At 100% it gives way to the done state's border. */
+.btn-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+[dir="rtl"] .btn-outline {
+  transform: scaleX(-1);
+}
+.btn-outline rect {
+  x: 1px;
+  y: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  /* Both radii, the button's own corner (a pill's is half its height): with rx alone the browser clamps the two
+     separately and a pill's outline turns into an ellipse. */
+  rx: calc(min(var(--r), var(--h) / 2) - 1px);
+  ry: calc(min(var(--r), var(--h) / 2) - 1px);
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2px;
+}
+.btn-outline rect:first-child {
+  opacity: 0.18;
+}
+.btn-outline rect:last-child {
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--p, 0));
+}
+.btn[data-status="loading"]:not([data-known]) .btn-outline rect:last-child {
+  stroke-dasharray: 0.18 0.82;
+  animation: btn-orbit 1.2s linear infinite;
+}
+@keyframes btn-orbit {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* Ring: replaces the icon while downloading. */
+.btn-ring {
+  width: 17px;
+  height: 17px;
+  rotate: -90deg;
+}
+.btn-ring circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+.btn-ring circle:first-child {
+  opacity: 0.25;
+}
+.btn-ring circle:last-child {
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--p, 0));
+  transition: stroke-dashoffset 0.2s linear;
+}
+/* Before the size is known, the ring and bar spin and slide instead of filling. */
+.btn[data-status="loading"]:not([data-known]) .btn-ring {
+  animation: btn-spin 0.9s linear infinite;
+}
+.btn[data-status="loading"]:not([data-known]) .btn-ring circle:last-child {
+  stroke-dashoffset: 0.7;
+}
+/* Failed: the warning pops in. */
+.btn[data-status="error"] .btn-icon {
+  animation: btn-pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.5);
+}
+/* Done and failed: disabled until they settle back to ready (StatusButton drops the pull and the fill and ignores
+   clicks). One flat colour, success green or error red, that doesn't answer hover or press, and the not-allowed
+   cursor; the icon (a check, or a warning) says the rest. */
+.btn[data-status="done"] {
+  --settled: var(--success);
+  --on-settled: var(--on-success);
+}
+.btn[data-status="error"] {
+  --settled: var(--danger);
+  --on-settled: var(--on-danger);
+}
+.btn:is([data-status="done"], [data-status="error"]),
+.btn:is([data-status="done"], [data-status="error"]):is(:hover, [data-state="hover"], :active, [data-state="active"]) {
+  --ring-base: inset 0 0 0 1.5px color-mix(in oklab, var(--settled) 40%, transparent);
+  cursor: not-allowed;
+  scale: none;
+  color: var(--settled);
+  background-color: color-mix(in oklab, var(--settled) 10%, transparent);
+  box-shadow: var(--ring-base);
+}
+.btn:is([data-status="done"], [data-status="error"])[data-look="solid"],
+.btn:is([data-status="done"], [data-status="error"])[data-look="solid"]:is(
+    :hover,
+    [data-state="hover"],
+    :active,
+    [data-state="active"]
+  ) {
+  --ring-base: 0 0 #0000;
+  color: var(--on-settled);
+  background-color: var(--settled);
+  box-shadow: none;
+}
+/* The settled colour arrives at once beneath the fill as it rises away (see the lock above), so the green or red is
+   uncovered from the bottom up, with no dark frame between. */
+.btn:is([data-status="done"], [data-status="error"]) {
+  transition:
+    translate var(--spring),
+    scale 0.15s ease-out,
+    color 0.3s;
+}
+
+@keyframes btn-spin {
+  to {
+    rotate: 270deg;
+  }
+}
+@keyframes btn-pop {
+  from {
+    scale: 0.3;
+    opacity: 0;
+  }
+}
+
+/* All of a stateful button's labels share one cell, so it keeps the widest one's width; only the current shows. */
+.btn-stack {
+  display: inline-grid;
+  text-align: center;
+  /* Equal-width digits, so the percentage doesn't wobble as it counts. */
+  font-variant-numeric: tabular-nums;
+}
+.btn-stack > span {
+  grid-area: 1 / 1;
+}
+.btn-stack > [data-sizer] {
+  visibility: hidden;
+}
+/* The labels roll: the outgoing one rises out with a soft blur as the next rises in from below; going back to
+   ready, they roll the other way. */
+.btn-stack > [data-roll] {
+  transition:
+    translate 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.3s,
+    filter 0.35s;
+}
+.btn-stack > [data-roll="past"] {
+  translate: 0 -75%;
+  opacity: 0;
+  filter: blur(3px);
+}
+.btn-stack > [data-roll="next"] {
+  translate: 0 75%;
+  opacity: 0;
+  filter: blur(3px);
+}
+/* "Downloading..." without the percentage: the three dots light up one after another, then rest together. */
+.btn-ellipsis > span {
+  animation: btn-ellipsis 1.4s ease-in-out infinite;
+}
+.btn-ellipsis > span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.btn-ellipsis > span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes btn-ellipsis {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+/* While downloading with a fill or bar, the download icon nudges downward. */
+.btn[data-busy="icon"][data-status="loading"] .cyc-in svg {
+  animation: btn-nudge 0.9s ease-in-out infinite;
+}
+@keyframes btn-nudge {
+  50% {
+    translate: 0 2px;
+  }
+}
+/* Sending, "plane": after the take-off, a new plane keeps taking off and coming round. */
+.btn[data-busy="plane"] .cyc-in {
+  animation:
+    cyc-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) var(--in-delay) both,
+    btn-plane 1.1s cubic-bezier(0.5, 0, 0.75, 0) calc(var(--in-delay) + 0.35s) infinite;
+}
+@keyframes btn-plane {
+  0% {
+    translate: 0 0;
+    opacity: 1;
+  }
+  55% {
+    translate: calc(12px * var(--dir)) -12px;
+    opacity: 0;
+  }
+  56% {
+    translate: calc(-12px * var(--dir)) 12px;
+    opacity: 0;
+  }
+  100% {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+/* Sending, "dots": three dots breathe in turn. */
+.btn-dots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  height: 17px;
+}
+.btn-dots > span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: btn-dot 1s ease-in-out infinite;
+}
+.btn-dots > span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.btn-dots > span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes btn-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    scale: 0.8;
+  }
+  40% {
+    opacity: 1;
+    scale: 1.15;
+  }
+}
+
+/* ── Text links ──────────────────────────────────────────────────────────────────────────────────────────── */
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--ink);
+  border-radius: 4px;
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: left 100%;
+  background-size: 0% 1.5px;
+  padding-bottom: 2px;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[dir="rtl"] .btn-link {
+  background-position: right 100%;
+}
+.btn-link[data-link="grow"]:is(:hover, [data-state="hover"]) {
+  background-size: 100% 1.5px;
+}
+.btn-link[data-link="slide"] {
+  background-size: 100% 1.5px;
+}
+.btn-link[data-link="slide"]:is(:hover, [data-state="hover"]) {
+  animation: btn-underline 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+@keyframes btn-underline {
+  0% {
+    background-position: right 100%;
+    background-size: 100% 1.5px;
+  }
+  50% {
+    background-position: right 100%;
+    background-size: 0% 1.5px;
+  }
+  50.01% {
+    background-position: left 100%;
+    background-size: 0% 1.5px;
+  }
+  100% {
+    background-position: left 100%;
+    background-size: 100% 1.5px;
+  }
+}
+.btn-link .btn-arrow {
+  transition: translate 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+[dir="rtl"] .btn-link .btn-arrow {
+  scale: -1 1;
+}
+.btn-link[data-link="arrow"]:is(:hover, [data-state="hover"]) .btn-arrow {
+  translate: 3px 0;
+}
+[dir="rtl"] .btn-link[data-link="arrow"]:is(:hover, [data-state="hover"]) .btn-arrow {
+  translate: -3px 0;
+}
+
+/* Reduced motion: no pull, no pop; colours and the progress itself stay. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) .btn,
+  :root:not([data-motion="full"]) .btn > :not(.btn-fill) {
+    translate: none !important;
+    scale: none !important;
+    animation: none !important;
+  }
+}
+:root[data-motion="reduce"] .btn,
+:root[data-motion="reduce"] .btn > :not(.btn-fill) {
+  translate: none !important;
+  scale: none !important;
+  animation: none !important;
+}
+
+/* ── Cycles: click → working → done, one story per button (StatusButton's `cycle`) ─────────────────────────────
+   Every icon part rests in its final pose and the motion is played on top, so reduced motion just shows the end. */
+.btn {
+  --dir: 1;
+}
+[dir="rtl"] .btn {
+  --dir: -1;
+}
+.cyc-glyph {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+[dir="rtl"] .cyc-plane {
+  transform: scaleX(-1);
+}
+.cyc-glyph :is(g, path, circle) {
+  transform-box: fill-box;
+}
+/* While working, the idle icon plays its exit (.cyc-out) and the busy indicator (.cyc-in) arrives in its place. */
+.btn-icon[data-phase="loading"] {
+  display: inline-grid;
+  place-items: center;
+}
+.btn-icon[data-phase="loading"] > * {
+  grid-area: 1 / 1;
+  display: inline-flex;
+}
+.cyc-out {
+  opacity: 0;
+  animation: cyc-hold var(--out-time) linear;
+}
+.cyc-in {
+  animation: cyc-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) var(--in-delay) both;
+}
+@keyframes cyc-hold {
+  0%,
+  92% {
+    opacity: 1;
+  }
+}
+@keyframes cyc-in {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+/* Download: the arrow winds up and dives into the tray, which dips as it lands; then the ring draws in and fills. */
+.btn[data-cycle="download"] {
+  --out-time: 0.55s;
+  --in-delay: 0.42s;
+}
+.cyc-out .cyc-arrow {
+  animation: cyc-dive 0.55s cubic-bezier(0.5, 0, 0.3, 1) both;
+}
+.cyc-out .cyc-tray {
+  animation: cyc-land 0.55s ease-out both;
+}
+@keyframes cyc-dive {
+  0% {
+    translate: 0 0;
+  }
+  30% {
+    translate: 0 -3px;
+  }
+  80% {
+    translate: 0 7px;
+    opacity: 1;
+  }
+  100% {
+    translate: 0 9px;
+    opacity: 0;
+  }
+}
+@keyframes cyc-land {
+  0%,
+  60% {
+    translate: 0 0;
+  }
+  78% {
+    translate: 0 2px;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* Send: the plane pulls back, then takes off up and away; the chosen indicator (dots, spinner, plane) follows. */
+.btn[data-cycle="send"] {
+  --out-time: 0.6s;
+  --in-delay: 0.45s;
+}
+.btn[data-cycle="send"] .cyc-out {
+  animation:
+    cyc-hold 0.6s linear,
+    cyc-takeoff 0.6s cubic-bezier(0.6, 0, 0.35, 1) both;
+}
+@keyframes cyc-takeoff {
+  0% {
+    translate: 0 0;
+    scale: 1;
+  }
+  30% {
+    translate: calc(-3px * var(--dir)) 3px;
+    scale: 0.88;
+  }
+  100% {
+    translate: calc(20px * var(--dir)) -20px;
+    scale: 0.5;
+  }
+}
+
+/* Email: the flap lifts open, then seals shut with a little give, a wax seal presses in, and the envelope is sent
+   on its way. The whole sealing takes 1 s (SEAL_MS in StatusButtons). */
+.btn[data-cycle="email"] {
+  --out-time: 1s;
+  --in-delay: 1s;
+}
+.cyc-seal {
+  fill: currentColor;
+  stroke: none;
+  opacity: 0;
+  transform-origin: center;
+}
+.cyc-flap {
+  transform-origin: 50% 0;
+}
+.cyc-out .cyc-flap {
+  animation: cyc-flap 1s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.cyc-out .cyc-seal {
+  animation: cyc-seal 1s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+.cyc-out .cyc-envelope {
+  animation: cyc-send 1s cubic-bezier(0.6, 0, 0.8, 0.4) both;
+}
+@keyframes cyc-flap {
+  0% {
+    scale: 1 1;
+  }
+  20%,
+  42% {
+    scale: 1 -1.45;
+  }
+  60% {
+    scale: 1 1.15;
+  }
+  68%,
+  100% {
+    scale: 1 1;
+  }
+}
+@keyframes cyc-seal {
+  0%,
+  58% {
+    opacity: 0;
+    scale: 0;
+  }
+  70% {
+    opacity: 1;
+    scale: 1.35;
+  }
+  78%,
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes cyc-send {
+  0% {
+    translate: 0 0;
+  }
+  /* Sits a little lower while the flap is open, so the open flap reads clearly above it. */
+  20%,
+  42% {
+    translate: 0 2px;
+  }
+  60%,
+  76% {
+    translate: 0 0;
+    opacity: 1;
+  }
+  100% {
+    translate: calc(16px * var(--dir)) -4px;
+    opacity: 0;
+  }
+}
+
+/* Done: the check draws itself in (inside the closed ring, for a download), and one soft pulse in the success colour
+   rings out from the button. Failed: a short, damped shake (transform, so it doesn't fight the stay-put rule). */
+.cyc-tick {
+  stroke-dasharray: 1;
+  animation: cyc-draw 0.45s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
+}
+.cyc-check {
+  animation: cyc-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+@keyframes cyc-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes cyc-pop {
+  from {
+    scale: 0.7;
+  }
+}
+.btn[data-status="done"] {
+  animation:
+    btn-success 0.55s cubic-bezier(0.3, 0, 0.2, 1),
+    btn-pulse 0.8s cubic-bezier(0.2, 0.7, 0.3, 1) 0.1s;
+}
+/* Success: the button swells a touch, dips past rest and settles, a small "got it". */
+@keyframes btn-success {
+  0% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.06;
+  }
+  70% {
+    scale: 0.985;
+  }
+  100% {
+    scale: 1;
+  }
+}
+.btn[data-status="error"] {
+  animation: btn-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes btn-pulse {
+  from {
+    box-shadow:
+      var(--ring-base),
+      0 0 0 0 color-mix(in oklab, var(--settled) 55%, transparent);
+  }
+  to {
+    box-shadow:
+      var(--ring-base),
+      0 0 0 12px color-mix(in oklab, var(--settled) 0%, transparent);
+  }
+}
+@keyframes btn-shake {
+  15% {
+    transform: translateX(-5px);
+  }
+  30% {
+    transform: translateX(4px);
+  }
+  45% {
+    transform: translateX(-3px);
+  }
+  60% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+}
+
+/* Reduced motion: every state shows its final pose at once; the email button shows its sealed envelope while it
+   works (it has no separate busy indicator). */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) :is(.btn-icon *, .btn-stack > *, .btn-ellipsis > *) {
+    animation: none !important;
+    transition: none !important;
+  }
+  :root:not([data-motion="full"]) .btn[data-cycle="email"] :is(.cyc-out, .cyc-seal) {
+    opacity: 1;
+  }
+}
+:root[data-motion="reduce"] :is(.btn-icon *, .btn-stack > *, .btn-ellipsis > *) {
+  animation: none !important;
+  transition: none !important;
+}
+:root[data-motion="reduce"] .btn[data-cycle="email"] :is(.cyc-out, .cyc-seal) {
+  opacity: 1;
+}
